@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,6 +17,48 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Admin routes
+Route::get('/admin', function() {
+    return redirect()->route('admin.dashboard');
+})->middleware(['auth', AdminMiddleware::class]);
+
+Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'authenticate'])->name('admin.authenticate');
+
+// Admin protected routes
+Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
+    Route::middleware([AdminMiddleware::class])->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+        
+        // Öğrenci yönetimi
+        Route::get('/students', function() {
+            return view('admin.students.index');
+        })->name('admin.students');
+        
+        // Oda yönetimi
+        Route::get('/rooms', function() {
+            return view('admin.rooms.index');
+        })->name('admin.rooms');
+        
+        // Ödeme yönetimi
+        Route::get('/payments', function() {
+            return view('admin.payments.index');
+        })->name('admin.payments');
+        
+        // Duyuru yönetimi
+        Route::get('/announcements', function() {
+            return view('admin.announcements.index');
+        })->name('admin.announcements');
+        
+        // Bakım talepleri
+        Route::get('/maintenance', function() {
+            return view('admin.maintenance.index');
+        })->name('admin.maintenance');
+    });
 });
 
 require __DIR__.'/auth.php';
