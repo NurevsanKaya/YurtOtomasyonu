@@ -4,8 +4,34 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('Welcome');
 });
+
+Route::get('/contact', function () {
+    return view('contact'); // contact.blade.php dosyasını döndürür
+});
+Route::get('/about', function () {
+    return view('aboutus');
+});
+Route::get('/room', function () {
+    return view('room');
+});Route::get('/gallery', function () {
+    return view('gallery');
+});
+Route::get('/oneroom', function () {
+    return view('oneroom');
+});
+Route::get('/tworoom', function () {
+    return view('tworoom');
+});
+Route::get('/threeroom', function () {
+    return view('threeroom');
+});
+Route::get('/fourroom', function () {
+    return view('fourroom');
+});
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -18,3 +44,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+

@@ -1,0 +1,57 @@
+
+
+.google-map {
+    width: 1000px; /* Haritanın genişliği */
+    height: 400px; /* Haritanın yüksekliği */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto; /* Haritayı yatayda ortalayalım */
+    margin-top: 10px; /* Üst kısmı biraz boş bırakıyoruz */
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+.contact-title {
+    font-size: 48px; /* Büyük başlık yazısı */
+    font-weight: lighter; /* Kalın yazı */
+    color: #120000; /* Kırmızı renk */
+    margin-bottom: 20px; /* Başlık ile harita arasında boşluk */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Gölge efekti */
+}
+.google-map iframe {
+    width: 100%; /* Haritanın div genişliğini almasını sağlar */
+    height: 100%; /* Haritanın div yüksekliğini almasını sağlar */
+    border: none; /* Çerçeve kaldırılır */
+}
+.contact-container {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 150px; /* Navigasyon çubuğundan sonra boşluk bırak */
+    text-align: center; /* Başlık ortalansın */
+}
+.contact-info {
+    display: flex;
+    justify-content: space-between; /* Sol ve sağa hizala */
+    gap: 20px; /* İki sütun arasında boşluk */
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    color: #333;
+    margin-top: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px; /* İkon ve metin arasında boşluk */
+    width: 48%; /* Her bir sütunun genişliği */
+}
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.info-text {
+    line-height: 1.5;
+}
