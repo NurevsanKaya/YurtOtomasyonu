@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
 
 // Admin routes
 Route::get('/admin', function() {
-    return redirect()->route('admin.dashboard');
+    return redirect('/admin/login');
 })->middleware(['auth', AdminMiddleware::class]);
 
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
