@@ -98,4 +98,101 @@ class StudentController extends Controller
             return back()->with('error', 'Öğrenci eklenirken bir hata oluştu: ' . $e->getMessage())->withInput();
         }
     }
+
+    public function edit($id)
+    {
+        try {
+            $student = Student::with(['user', 'room'])->findOrFail($id);
+            $rooms = Room::all();
+            return view('admin.students.edit', compact('student', 'rooms'));
+        } catch (\Exception $e) {
+            Log::error('Öğrenci düzenleme sayfası açılırken hata oluştu: ' . $e->getMessage());
+            return back()->with('error', 'Öğrenci bilgileri getirilirken bir hata oluştu.');
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $student = Student::findOrFail($id);
+            
+            // Validasyon kuralları
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'tc' => 'required|string|size:11|unique:students,tc,' . $id,
+                'phone' => 'required|string|max:20',
+                'email' => 'required|email|unique:students,email,' . $id,
+                'birth_date' => 'required|date',
+                'registration_date' => 'required|date',
+                'medical_condition' => 'nullable|string',
+                'emergency_contact' => 'required|string',
+                'room_id' => 'nullable|exists:rooms,id',
+            ]);
+
+            DB::beginTransaction();
+
+            // User bilgilerini güncelle
+            $student->user->update([
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'email' => $request->email,
+            ]);
+
+            // Öğrenci bilgilerini güncelle
+            $student->update([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'tc' => $request->tc,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'birth_date' => $request->birth_date,
+                'registration_date' => $request->registration_date,
+                'medical_condition' => $request->medical_condition,
+                'emergency_contact' => $request->emergency_contact,
+                'room_id' => $request->room_id,
+            ]);
+
+            DB::commit();
+
+            Log::info('Öğrenci başarıyla güncellendi', ['student_id' => $id]);
+
+            return redirect()->route('admin.students.index')
+                ->with('success', 'Öğrenci başarıyla güncellendi.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validasyon hatası:', [
+                'errors' => $e->errors()
+            ]);
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Öğrenci güncellenirken hata oluştu: ' . $e->getMessage());
+            return back()->with('error', 'Öğrenci güncellenirken bir hata oluştu: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $student = Student::findOrFail($id);
+            
+            DB::beginTransaction();
+
+            // Önce user'ı sil
+            $student->user->delete();
+            
+            // Sonra öğrenciyi sil
+            $student->delete();
+
+            DB::commit();
+
+            Log::info('Öğrenci başarıyla silindi', ['student_id' => $id]);
+
+            return redirect()->route('admin.students.index')
+                ->with('success', 'Öğrenci başarıyla silindi.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Öğrenci silinirken hata oluştu: ' . $e->getMessage());
+            return back()->with('error', 'Öğrenci silinirken bir hata oluştu: ' . $e->getMessage());
+        }
+    }
 } 

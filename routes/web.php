@@ -64,6 +64,9 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         // Öğrenci yönetimi
         Route::get('/students', [StudentController::class, 'index'])->name('admin.students.index');
         Route::post('/students', [StudentController::class, 'store'])->name('admin.students.store');
+        Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('admin.students.edit');
+        Route::put('/students/{id}', [StudentController::class, 'update'])->name('admin.students.update');
+        Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
         
         // Oda yönetimi
         Route::get('/rooms', function() {
