@@ -49,8 +49,12 @@
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $student->email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $student->room ? $student->room->room_number : 'Oda Atanmamış' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <button class="text-indigo-600 hover:text-indigo-900 mr-3">Düzenle</button>
-                                    <button class="text-red-600 hover:text-red-900">Sil</button>
+                                    <a href="{{ route('admin.students.edit', $student->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Düzenle</a>
+                                    <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Bu öğrenciyi silmek istediğinizden emin misiniz?')">Sil</button>
+                                    </form>
                                 </td>
                             </tr>
                             @empty
