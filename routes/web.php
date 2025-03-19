@@ -63,6 +63,7 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         
         // Öğrenci yönetimi
         Route::get('/students', [StudentController::class, 'index'])->name('admin.students.index');
+        Route::post('/students', [StudentController::class, 'store'])->name('admin.students.store');
         
         // Oda yönetimi
         Route::get('/rooms', function() {
