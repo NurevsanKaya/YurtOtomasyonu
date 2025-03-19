@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\RoomController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +63,14 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
         // Öğrenci yönetimi
+        Route::get('/students', [StudentController::class, 'index'])->name('admin.students.index');
+        Route::post('/students', [StudentController::class, 'store'])->name('admin.students.store');
+
+        // Oda yönetimi
+        Route::get('/rooms', function() {
+            return view('admin.rooms.index');
+        })->name('admin.rooms');
+
         Route::get('/students', function() {
             return view('admin.students.index');
         })->name('admin.students');
