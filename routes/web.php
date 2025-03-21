@@ -102,5 +102,11 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
 
 });
 
+// İlçeleri getir
+Route::get('/district/{city}', function ($city) {
+    $districts = \App\Models\District::where('city_id', $city)->get();
+    return response()->json($districts);
+});
+
 require __DIR__.'/auth.php';
 

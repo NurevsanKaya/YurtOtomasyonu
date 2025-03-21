@@ -18,6 +18,13 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'role_id' => 2,// kullanıcı 
+        ]);
+
+        // Şehir ve ilçe verilerini ekle
+        $this->call([
+            CitySeeder::class,
+            DistrictSeeder::class,
         ]);
     }
 }
