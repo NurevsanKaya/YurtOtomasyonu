@@ -65,22 +65,14 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         // Öğrenci yönetimi
         Route::get('/students', [StudentController::class, 'index'])->name('admin.students.index');
         Route::post('/students', [StudentController::class, 'store'])->name('admin.students.store');
-<<<<<<< HEAD
         Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('admin.students.edit');
         Route::put('/students/{id}', [StudentController::class, 'update'])->name('admin.students.update');
         Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
         
-=======
-
->>>>>>> 1798d686f52ca32e043d721dfe1059a5f3151a17
         // Oda yönetimi
         Route::get('/rooms', function() {
             return view('admin.rooms.index');
         })->name('admin.rooms');
-
-        Route::get('/students', function() {
-            return view('admin.students.index');
-        })->name('admin.students');
 
         Route::get('rooms', [RoomController::class, 'index'])->name('admin.rooms.index');
         Route::resource('rooms', RoomController::class);
@@ -108,6 +100,12 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
 
 
 
+});
+
+// İlçeleri getir
+Route::get('/district/{city}', function ($city) {
+    $districts = \App\Models\District::where('city_id', $city)->get();
+    return response()->json($districts);
 });
 
 require __DIR__.'/auth.php';

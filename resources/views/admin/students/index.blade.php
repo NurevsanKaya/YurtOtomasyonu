@@ -74,122 +74,283 @@
 
 <!-- Yeni Öğrenci Ekleme Modal -->
 <div id="studentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="relative top-20 mx-auto p-5 border w-4/5 max-w-4xl shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Yeni Öğrenci Ekle</h3>
             <form action="{{ route('admin.students.store') }}" method="POST">
                 @csrf
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="first_name">
-                        Ad
-                    </label>
-                    <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('first_name') border-red-500 @enderror" required>
-                    @error('first_name')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
+                
+                <!-- Adım Göstergeleri -->
+                <div class="flex justify-center mb-4">
+                    <div id="step-indicator" class="flex justify-between w-full max-w-3xl">
+                        <div class="step-item active" data-step="1">
+                            <div class="rounded-full bg-indigo-600 text-white w-8 h-8 flex items-center justify-center">1</div>
+                            <span class="text-xs mt-1">Öğrenci Bilgileri</span>
+                        </div>
+                        <div class="step-item" data-step="2">
+                            <div class="rounded-full bg-gray-300 text-gray-700 w-8 h-8 flex items-center justify-center">2</div>
+                            <span class="text-xs mt-1">Adres Bilgileri</span>
+                        </div>
+                        <div class="step-item" data-step="3">
+                            <div class="rounded-full bg-gray-300 text-gray-700 w-8 h-8 flex items-center justify-center">3</div>
+                            <span class="text-xs mt-1">Veli Bilgileri</span>
+                        </div>
+                        <div class="step-item" data-step="4">
+                            <div class="rounded-full bg-gray-300 text-gray-700 w-8 h-8 flex items-center justify-center">4</div>
+                            <span class="text-xs mt-1">Oda Bilgileri</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="last_name">
-                        Soyad
-                    </label>
-                    <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('last_name') border-red-500 @enderror" required>
-                    @error('last_name')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
+                
+                <!-- Adım 1: Öğrenci Bilgileri -->
+                <div id="step-1" class="form-step">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="first_name">
+                                Ad *
+                            </label>
+                            <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('first_name') border-red-500 @enderror" required>
+                            @error('first_name')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="last_name">
+                                Soyad *
+                            </label>
+                            <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('last_name') border-red-500 @enderror" required>
+                            @error('last_name')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="tc">
+                                TC Kimlik No *
+                            </label>
+                            <input type="text" name="tc" id="tc" value="{{ old('tc') }}" maxlength="11" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('tc') border-red-500 @enderror" required>
+                            @error('tc')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
+                                Telefon *
+                            </label>
+                            <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('phone') border-red-500 @enderror" required placeholder="05XXXXXXXXX">
+                            @error('phone')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                                Email *
+                            </label>
+                            <input type="email" name="email" id="email" value="{{ old('email') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('email') border-red-500 @enderror" required>
+                            @error('email')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="birth_date">
+                                Doğum Tarihi *
+                            </label>
+                            <input type="date" name="birth_date" id="birth_date" value="{{ old('birth_date') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('birth_date') border-red-500 @enderror" required>
+                            @error('birth_date')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="registration_date">
+                                Kayıt Tarihi *
+                            </label>
+                            <input type="date" name="registration_date" id="registration_date" value="{{ old('registration_date', date('Y-m-d')) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('registration_date') border-red-500 @enderror" required>
+                            @error('registration_date')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="emergency_contact">
+                                Acil Durum İletişim *
+                            </label>
+                            <input type="text" name="emergency_contact" id="emergency_contact" value="{{ old('emergency_contact') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('emergency_contact') border-red-500 @enderror" required placeholder="05XXXXXXXXX">
+                            @error('emergency_contact')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4 col-span-2">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="medical_condition">
+                                Sağlık Durumu
+                            </label>
+                            <textarea name="medical_condition" id="medical_condition" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('medical_condition') border-red-500 @enderror" rows="3">{{ old('medical_condition') }}</textarea>
+                            @error('medical_condition')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active') ? 'checked' : '' }} class="form-checkbox h-4 w-4 text-indigo-600">
+                                <span class="text-gray-700 text-sm font-bold">Aktif mi?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" onclick="nextStep(1)" class="bg-indigo-600 text-white px-4 py-2 rounded-md">İleri</button>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="tc">
-                        TC Kimlik No
-                    </label>
-                    <input type="text" name="tc" id="tc" value="{{ old('tc') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('tc') border-red-500 @enderror" required>
-                    @error('tc')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
+                
+                <!-- Adım 2: Adres Bilgileri -->
+                <div id="step-2" class="form-step hidden">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="city_id">
+                                Şehir *
+                            </label>
+                            <select name="city_id" id="city_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('city_id') border-red-500 @enderror" required>
+                                <option value="">Şehir Seçin</option>
+                                @foreach(\App\Models\City::all() as $city)
+                                    <option value="{{ $city->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('city_id')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="district_id">
+                                İlçe *
+                            </label>
+                            <select name="district_id" id="district_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('district_id') border-red-500 @enderror" required>
+                                <option value="">Önce Şehir Seçin</option>
+                            </select>
+                            @error('district_id')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="postal_code">
+                                Posta Kodu *
+                            </label>
+                            <input type="text" name="postal_code" id="postal_code" value="{{ old('postal_code') }}" maxlength="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('postal_code') border-red-500 @enderror" required>
+                            @error('postal_code')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4 col-span-2">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="address_line">
+                                Detaylı Adres *
+                            </label>
+                            <textarea name="address_line" id="address_line" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('address_line') border-red-500 @enderror" rows="3" required>{{ old('address_line') }}</textarea>
+                            @error('address_line')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" onclick="prevStep(2)" class="bg-gray-500 text-white px-4 py-2 rounded-md">Geri</button>
+                        <button type="button" onclick="nextStep(2)" class="bg-indigo-600 text-white px-4 py-2 rounded-md">İleri</button>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
-                        Telefon
-                    </label>
-                    <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('phone') border-red-500 @enderror" required>
-                    @error('phone')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
+                
+                <!-- Adım 3: Veli Bilgileri -->
+                <div id="step-3" class="form-step hidden">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="guardian_first_name">
+                                Veli Adı *
+                            </label>
+                            <input type="text" name="guardian_first_name" id="guardian_first_name" value="{{ old('guardian_first_name') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('guardian_first_name') border-red-500 @enderror" required>
+                            @error('guardian_first_name')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="guardian_last_name">
+                                Veli Soyadı *
+                            </label>
+                            <input type="text" name="guardian_last_name" id="guardian_last_name" value="{{ old('guardian_last_name') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('guardian_last_name') border-red-500 @enderror" required>
+                            @error('guardian_last_name')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="guardian_phone">
+                                Veli Telefon *
+                            </label>
+                            <input type="text" name="guardian_phone" id="guardian_phone" value="{{ old('guardian_phone') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('guardian_phone') border-red-500 @enderror" required placeholder="05XXXXXXXXX">
+                            @error('guardian_phone')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="guardian_email">
+                                Veli Email *
+                            </label>
+                            <input type="email" name="guardian_email" id="guardian_email" value="{{ old('guardian_email') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('guardian_email') border-red-500 @enderror" required>
+                            @error('guardian_email')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="guardian_relationship">
+                                Yakınlık Derecesi *
+                            </label>
+                            <select name="guardian_relationship" id="guardian_relationship" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('guardian_relationship') border-red-500 @enderror" required>
+                                <option value="">Seçin</option>
+                                <option value="Anne" {{ old('guardian_relationship') == 'Anne' ? 'selected' : '' }}>Anne</option>
+                                <option value="Baba" {{ old('guardian_relationship') == 'Baba' ? 'selected' : '' }}>Baba</option>
+                                <option value="Kardeş" {{ old('guardian_relationship') == 'Kardeş' ? 'selected' : '' }}>Kardeş</option>
+                                <option value="Akraba" {{ old('guardian_relationship') == 'Akraba' ? 'selected' : '' }}>Akraba</option>
+                                <option value="Diğer" {{ old('guardian_relationship') == 'Diğer' ? 'selected' : '' }}>Diğer</option>
+                            </select>
+                            @error('guardian_relationship')
+                                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" onclick="prevStep(3)" class="bg-gray-500 text-white px-4 py-2 rounded-md">Geri</button>
+                        <button type="button" onclick="nextStep(3)" class="bg-indigo-600 text-white px-4 py-2 rounded-md">İleri</button>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                        Email
-                    </label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('email') border-red-500 @enderror" required>
-                    @error('email')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="birth_date">
-                        Doğum Tarihi
-                    </label>
-                    <input type="date" name="birth_date" id="birth_date" value="{{ old('birth_date') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('birth_date') border-red-500 @enderror" required>
-                    @error('birth_date')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="registration_date">
-                        Kayıt Tarihi
-                    </label>
-                    <input type="date" name="registration_date" id="registration_date" value="{{ old('registration_date') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('registration_date') border-red-500 @enderror" required>
-                    @error('registration_date')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="medical_condition">
-                        Sağlık Durumu
-                    </label>
-                    <textarea name="medical_condition" id="medical_condition" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('medical_condition') border-red-500 @enderror" rows="3">{{ old('medical_condition') }}</textarea>
-                    @error('medical_condition')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="emergency_contact">
-                        Acil Durum İletişim
-                    </label>
-                    <input type="text" name="emergency_contact" id="emergency_contact" value="{{ old('emergency_contact') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('emergency_contact') border-red-500 @enderror" required>
-                    @error('emergency_contact')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="room_id">
-                        Oda
-                    </label>
-                    <select name="room_id" id="room_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('room_id') border-red-500 @enderror">
-                        <option value="">Oda Seçin</option>
+                
+                <!-- Adım 4: Oda Bilgileri -->
+                <div id="step-4" class="form-step hidden">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="room_id">
+                            Oda *
+                        </label>
+                        <select name="room_id" id="room_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('room_id') border-red-500 @enderror" required>
+                            <option value="">Oda Seçin</option>
+                            @if($rooms->count() > 0)
+                                @foreach($rooms as $room)
+                                    <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
+                                        {{ $room->room_number }} - Kapasite: {{ $room->capacity }}, Mevcut: {{ $room->current_occupants }}, Kat: {{ $room->floor }}
+                                    </option>
+                                @endforeach
+                            @else
+                                <option value="" disabled>Kayıtlı oda bulunmamaktadır</option>
+                            @endif
+                        </select>
+                        @error('room_id')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                        
                         @if($rooms->count() > 0)
-                            @foreach($rooms as $room)
-                                <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>{{ $room->room_number }}</option>
-                            @endforeach
-                        @else
-                            <option value="" disabled>Kayıtlı oda bulunmamaktadır</option>
+                            <p class="text-sm text-gray-500 mt-1">Toplam {{ $rooms->count() }} oda bulunmaktadır</p>
                         @endif
-                    </select>
-                    @error('room_id')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                    @if($rooms->count() > 0)
-                        <p class="text-sm text-gray-500 mt-1">Toplam {{ $rooms->count() }} oda bulunmaktadır</p>
-                    @endif
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeModal()" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2">İptal</button>
-                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md">Kaydet</button>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button type="button" onclick="prevStep(4)" class="bg-gray-500 text-white px-4 py-2 rounded-md">Geri</button>
+                        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md">Öğrenciyi Kaydet</button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 function openModal() {
     document.getElementById('studentModal').classList.remove('hidden');
@@ -207,43 +368,64 @@ window.onclick = function(event) {
     }
 }
 
-// Form gönderildiğinde
-document.querySelector('form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    
-    fetch(this.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Başarılı mesajı göster
-            alert('Öğrenci başarıyla eklendi');
-            // Sayfayı yenile
-            window.location.reload();
-        } else {
-            // Hata mesajlarını göster
-            if (data.errors) {
-                Object.keys(data.errors).forEach(key => {
-                    const errorElement = document.querySelector(`[name="${key}"]`).nextElementSibling;
-                    if (errorElement && errorElement.classList.contains('text-red-500')) {
-                        errorElement.textContent = data.errors[key][0];
-                    }
-                });
-            }
-            alert(data.message || 'Öğrenci eklenirken bir hata oluştu');
-        }
-    })
-    .catch(error => {
-        console.error('Hata:', error);
-        alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+// Form adımları arasında gezinme
+function showStep(stepNumber) {
+    document.querySelectorAll('.form-step').forEach(step => {
+        step.classList.add('hidden');
     });
+    document.getElementById('step-' + stepNumber).classList.remove('hidden');
+    
+    // Adım göstergelerini güncelle
+    document.querySelectorAll('.step-item').forEach(item => {
+        const itemStep = item.getAttribute('data-step');
+        if (itemStep <= stepNumber) {
+            item.querySelector('div').classList.remove('bg-gray-300', 'text-gray-700');
+            item.querySelector('div').classList.add('bg-indigo-600', 'text-white');
+        } else {
+            item.querySelector('div').classList.remove('bg-indigo-600', 'text-white');
+            item.querySelector('div').classList.add('bg-gray-300', 'text-gray-700');
+        }
+    });
+}
+
+function nextStep(currentStep) {
+    // Burada geçerli adımın validasyonunu yapabilirsiniz
+    showStep(currentStep + 1);
+}
+
+function prevStep(currentStep) {
+    showStep(currentStep - 1);
+}
+
+// jQuery ile şehir-ilçe ilişkisi
+$(document).ready(function() {
+    $('#city_id').on('change', function() {
+        var city_id = $(this).val();
+        
+        if (city_id) {
+            $.ajax({
+                url: '/district/' + city_id,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#district_id').empty();
+                    $('#district_id').append('<option value="">İlçe Seçin</option>');
+                    $.each(data, function(key, district) {
+                        $('#district_id').append('<option value="' + district.id + '">' + district.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#district_id').empty();
+            $('#district_id').append('<option value="">Önce Şehir Seçin</option>');
+        }
+    });
+    
+    // Sayfa yüklendiğinde, eğer şehir seçili ise ilçeleri getir
+    var selectedCity = $('#city_id').val();
+    if (selectedCity) {
+        $('#city_id').trigger('change');
+    }
 });
 </script>
 @endsection
