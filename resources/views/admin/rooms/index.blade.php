@@ -83,7 +83,8 @@
                                     <td class="px-6 py-4 text-gray-700">{{ $room->price }}</td>
                                     <td class="px-6 py-4">
                                         <!-- Düzenle Butonu -->
-                                        <button onclick="editRoom({{ $room }})" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">Düzenle</button>
+
+                                        <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">Düzenle</button>
                                         <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700">Sil</button>
                                     </td>
                                 </tr>

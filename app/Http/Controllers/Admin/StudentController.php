@@ -42,7 +42,7 @@ class StudentController extends Controller
         try {
             // Debug için tüm gelen verileri loglayalım
             Log::info('Gelen form verileri:', $request->all());
-            
+
             // Validasyon kuralları
             $validated = $request->validate([
                 // Öğrenci bilgileri
@@ -57,6 +57,7 @@ class StudentController extends Controller
                 'emergency_contact' => 'required|string',
                 'is_active' => 'boolean',
 
+                //exist:girilen değerlerin varlığını kontrol et
                 // Adres bilgileri
                 'city_id' => 'required|exists:cities,id',
                 'district_id' => 'required|exists:districts,id',
@@ -238,10 +239,10 @@ class StudentController extends Controller
 
             DB::beginTransaction();
 
-            // Önce user'ı sil
+            // Önce user'ı sileriz
             $student->user->delete();
 
-            // Sonra öğrenciyi sil
+            // Sonra öğrenciyi sileriz
             $student->delete();
 
             DB::commit();

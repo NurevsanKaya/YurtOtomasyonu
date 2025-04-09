@@ -79,7 +79,7 @@
             <h3 class="text-lg font-medium text-gray-900 mb-4">Yeni Öğrenci Ekle</h3>
             <form action="{{ route('admin.students.store') }}" method="POST">
                 @csrf
-                
+
                 <!-- Adım Göstergeleri -->
                 <div class="flex justify-center mb-4">
                     <div id="step-indicator" class="flex justify-between w-full max-w-3xl">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Adım 1: Öğrenci Bilgileri -->
                 <div id="step-1" class="form-step">
                     <div class="grid grid-cols-2 gap-4">
@@ -197,7 +197,7 @@
                         <button type="button" onclick="nextStep(1)" class="bg-indigo-600 text-white px-4 py-2 rounded-md">İleri</button>
                     </div>
                 </div>
-                
+
                 <!-- Adım 2: Adres Bilgileri -->
                 <div id="step-2" class="form-step hidden">
                     <div class="grid grid-cols-2 gap-4">
@@ -250,7 +250,7 @@
                         <button type="button" onclick="nextStep(2)" class="bg-indigo-600 text-white px-4 py-2 rounded-md">İleri</button>
                     </div>
                 </div>
-                
+
                 <!-- Adım 3: Veli Bilgileri -->
                 <div id="step-3" class="form-step hidden">
                     <div class="grid grid-cols-2 gap-4">
@@ -312,7 +312,7 @@
                         <button type="button" onclick="nextStep(3)" class="bg-indigo-600 text-white px-4 py-2 rounded-md">İleri</button>
                     </div>
                 </div>
-                
+
                 <!-- Adım 4: Oda Bilgileri -->
                 <div id="step-4" class="form-step hidden">
                     <div class="mb-4">
@@ -321,6 +321,7 @@
                         </label>
                         <select name="room_id" id="room_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('room_id') border-red-500 @enderror" required>
                             <option value="">Oda Seçin</option>
+
                             @if($rooms->count() > 0)
                                 @foreach($rooms as $room)
                                     <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
@@ -334,12 +335,12 @@
                         @error('room_id')
                             <p class="text-red-500 text-xs italic">{{ $message }}</p>
                         @enderror
-                        
+
                         @if($rooms->count() > 0)
                             <p class="text-sm text-gray-500 mt-1">Toplam {{ $rooms->count() }} oda bulunmaktadır</p>
                         @endif
                     </div>
-                    
+
                     <div class="flex justify-between">
                         <button type="button" onclick="prevStep(4)" class="bg-gray-500 text-white px-4 py-2 rounded-md">Geri</button>
                         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md">Öğrenciyi Kaydet</button>
@@ -374,7 +375,7 @@ function showStep(stepNumber) {
         step.classList.add('hidden');
     });
     document.getElementById('step-' + stepNumber).classList.remove('hidden');
-    
+
     // Adım göstergelerini güncelle
     document.querySelectorAll('.step-item').forEach(item => {
         const itemStep = item.getAttribute('data-step');
@@ -401,7 +402,7 @@ function prevStep(currentStep) {
 $(document).ready(function() {
     $('#city_id').on('change', function() {
         var city_id = $(this).val();
-        
+
         if (city_id) {
             $.ajax({
                 url: '/district/' + city_id,
@@ -420,7 +421,7 @@ $(document).ready(function() {
             $('#district_id').append('<option value="">Önce Şehir Seçin</option>');
         }
     });
-    
+
     // Sayfa yüklendiğinde, eğer şehir seçili ise ilçeleri getir
     var selectedCity = $('#city_id').val();
     if (selectedCity) {

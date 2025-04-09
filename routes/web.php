@@ -62,7 +62,7 @@ Route::get('/admin', function() {
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'authenticate'])->name('admin.authenticate');
 
-// Admin protected routes
+// Admin rotaları
 Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     Route::middleware([AdminMiddleware::class])->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -77,14 +77,9 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
 
         // Oda yönetimi
-        Route::get('/rooms', function() {
-            return view('admin.rooms.index');
-        })->name('admin.rooms');
+
 
         Route::get('rooms', [RoomController::class, 'index'])->name('admin.rooms.index');
-        Route::resource('rooms', RoomController::class);
-
-
 
         Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
 
@@ -112,6 +107,7 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
 
         // 1. İzin Alma Sistemi
         Route::get('/permission', [PermissionController::class, 'index'])->name('student.izin.index');       // İzin başvurularını listeleme, durum takibi
+        Route::post('/permission', [PermissionController::class, 'store'])->name('student.izin.store');     // İzin başvurusu kaydetme
 
 
         // 2. Oda Bilgileri Görüntüleme ve Değişiklik Talebi

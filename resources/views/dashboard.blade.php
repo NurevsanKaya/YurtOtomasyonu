@@ -12,7 +12,7 @@
         <!-- Sidebar -->
         <aside class="bg-gray-800 w-64 min-h-screen flex flex-col">
             <div class="p-4">
-                <h2 class="text-white text-2xl font-semibold">Yurt Yönetimi</h2>
+                <h2 class="text-white text-2xl font-semibold">Yurt İşlemlerim</h2>
             </div>
             <nav class="flex-1 px-2 py-4 space-y-2">
                 <!-- Profil Bilgileri ve Güncelleme -->
