@@ -28,6 +28,6 @@
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
-        <a class="btn-getstarted" href="">Giriş Yap</a>
+        <a href="{{ route('login') }}" class="btn-getstarted">Giriş Yap</a>
     </div>
 </header>

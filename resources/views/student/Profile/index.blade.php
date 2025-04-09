@@ -1,14 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Profil Bilgileri') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Diğer içerik alanınız -->
-        </div>
+    <!-- Flex Container: Sidebar ve Ana İçerik Yan Yana -->
+    <div class="flex">
         <!-- Sidebar -->
         <aside class="bg-gray-800 w-64 min-h-screen flex flex-col">
             <div class="p-4">
@@ -28,12 +26,12 @@
                 <!-- Oda Bilgileri Görüntüleme ve Değişiklik Talebi -->
                 <a href="{{ route('student.oda.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
                     <i class="fas fa-bed mr-3"></i>
-                    <span>Oda Bilgileri Görüntüleme ve Değişiklik Talebi</span>
+                    <span>Oda Bilgileri ve Değişiklik Talebi</span>
                 </a>
                 <!-- Yemekhane Takibi ve Menü Görüntüleme -->
                 <a href="{{ route('student.menu.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
                     <i class="fas fa-money-bill mr-3"></i>
-                    <span>Yemekhane Takibi ve Menü Görüntüleme</span>
+                    <span>Yemekhane Takibi ve Menü</span>
                 </a>
                 <!-- Aidat ve Borç Takibi -->
                 <a href="{{ route('student.aidat.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
@@ -46,16 +44,4 @@
                     <span>Ziyaretçi Bildirimi</span>
                 </a>
                 <!-- Duyuru Sistemi -->
-                <a href="{{ route('student.duyuru.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
-                    <i class="fas fa-tools mr-3"></i>
-                    <span>Duyuru Sistemi</span>
-                </a>
-                <!-- Dilek ve Şikayet Bildirimi -->
-                <a href="{{ route('student.sikayet.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
-                    <i class="fas fa-tools mr-3"></i>
-                    <span>Dilek ve Şikayet Bildirimi</span>
-                </a>
-            </nav>
-        </aside>
-    </div>
-</x-app-layout>
+                <a href="{{ route('student.du

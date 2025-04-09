@@ -4,6 +4,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\student\AnnouncementController;
+use App\Http\Controllers\student\ComplaintController;
+use App\Http\Controllers\student\PaymentController;
+use App\Http\Controllers\student\PermissionController;
+use App\Http\Controllers\student\RefectorController;
+use App\Http\Controllers\student\StudentRoomController;
+use App\Http\Controllers\student\StudentVisitorController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -68,7 +75,7 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('admin.students.edit');
         Route::put('/students/{id}', [StudentController::class, 'update'])->name('admin.students.update');
         Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
-        
+
         // Oda yönetimi
         Route::get('/rooms', function() {
             return view('admin.rooms.index');
@@ -97,6 +104,37 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         })->name('admin.maintenance');
     });
 
+
+// Öğrenci korumalı rotalar
+    Route::prefix('student')->middleware(['web', 'auth'])->group(function () {
+
+
+
+        // 1. İzin Alma Sistemi
+        Route::get('/permission', [PermissionController::class, 'index'])->name('student.izin.index');       // İzin başvurularını listeleme, durum takibi
+
+
+        // 2. Oda Bilgileri Görüntüleme ve Değişiklik Talebi
+        Route::get('/rooms', [StudentRoomController::class, 'index'])->name('student.oda.index');            // Mevcut oda bilgilerini gösterme
+
+
+        // 3. Yemekhane Takibi ve Menü Görüntüleme
+        Route::get('/refector', [RefectorController::class, 'index'])->name('student.menu.index');            // Günlük/haftalık menü, öğün saatleri
+
+        // 4. Aidat ve Borç Takibi
+        Route::get('/payment', [PaymentController::class, 'index'])->name('student.aidat.index');         // Aidat geçmişi ve borç bilgileri
+
+        // 5. Ziyaretçi Bildirimi
+        Route::get('/visitor', [StudentVisitorController::class, 'index'])->name('student.ziyaretci.index');       // Mevcut ziyaretçi başvurularını listeleme
+
+
+        // 6. Duyuru Sistemi
+        Route::get('/announcement', [AnnouncementController::class, 'index'])->name('student.duyuru.index');      // Duyuruların listesi
+
+        // 7. Dilek ve Şikayet Bildirimi
+        Route::get('/complain', [ComplaintController::class, 'index'])->name('student.sikayet.index');       // Dilek/şikayet listesi
+
+    });
 
 
 
