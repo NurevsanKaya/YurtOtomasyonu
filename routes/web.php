@@ -4,15 +4,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\student\AnnouncementController;
 use App\Http\Controllers\student\ComplaintController;
-use App\Http\Controllers\student\PaymentController;
 use App\Http\Controllers\student\PermissionController;
 use App\Http\Controllers\student\RefectorController;
+use App\Http\Controllers\student\StudentPaymentController;
 use App\Http\Controllers\student\StudentRoomController;
 use App\Http\Controllers\student\StudentVisitorController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('Welcome');
@@ -89,55 +91,50 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
 
         // Ödeme yönetimi
-        Route::get('/payments', function() {
-            return view('admin.payments.index');
-        })->name('admin.payments');
+        Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments');
+        Route::post('/payments', [PaymentController::class, 'store'])->name('admin.payments.store');
+        Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('admin.payments.show');
+        Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('admin.payments.edit');
+        Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('admin.payments.update');
+        Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('admin.payments.destroy');
 
         // Duyuru yönetimi
-        Route::get('/announcements', function() {
-            return view('admin.announcements.index');
-        })->name('admin.announcements');
+        Route::get('/announcements', [App\Http\Controllers\AnnouncementController::class, 'index'])->name('admin.announcements.index');
+        Route::get('/announcements/create', [App\Http\Controllers\AnnouncementController::class, 'create'])->name('admin.announcements.create');
+        Route::post('/announcements', [App\Http\Controllers\AnnouncementController::class, 'store'])->name('admin.announcements.store');
+        Route::get('/announcements/{announcement}/edit', [App\Http\Controllers\AnnouncementController::class, 'edit'])->name('admin.announcements.edit');
+        Route::put('/announcements/{announcement}', [App\Http\Controllers\AnnouncementController::class, 'update'])->name('admin.announcements.update');
+        Route::delete('/announcements/{announcement}', [App\Http\Controllers\AnnouncementController::class, 'destroy'])->name('admin.announcements.destroy');
 
         // Bakım talepleri
         Route::get('/maintenance', function() {
             return view('admin.maintenance.index');
         })->name('admin.maintenance');
     });
-
+});
 
 // Öğrenci korumalı rotalar
-    Route::prefix('student')->middleware(['web', 'auth'])->group(function () {
+Route::prefix('student')->middleware(['web', 'auth'])->group(function () {
+    // 1. İzin Alma Sistemi
+    Route::get('/permission', [PermissionController::class, 'index'])->name('student.izin.index');
 
+    // 2. Oda Bilgileri Görüntüleme ve Değişiklik Talebi
+    Route::get('/rooms', [StudentRoomController::class, 'index'])->name('student.oda.index');
 
+    // 3. Yemekhane Takibi ve Menü Görüntüleme
+    Route::get('/refector', [RefectorController::class, 'index'])->name('student.menu.index');
 
-        // 1. İzin Alma Sistemi
-        Route::get('/permission', [PermissionController::class, 'index'])->name('student.izin.index');       // İzin başvurularını listeleme, durum takibi
+    // 4. Aidat ve Borç Takibi
+    Route::get('/aidat', [StudentPaymentController::class, 'index'])->name('student.aidat.index');
 
+    // 5. Ziyaretçi Bildirimi
+    Route::get('/visitor', [StudentVisitorController::class, 'index'])->name('student.ziyaretci.index');
 
-        // 2. Oda Bilgileri Görüntüleme ve Değişiklik Talebi
-        Route::get('/rooms', [StudentRoomController::class, 'index'])->name('student.oda.index');            // Mevcut oda bilgilerini gösterme
+    // 6. Duyuru Sistemi
+    Route::get('/duyuru', [App\Http\Controllers\student\AnnouncementController::class, 'index'])->name('student.duyuru.index');
 
-
-        // 3. Yemekhane Takibi ve Menü Görüntüleme
-        Route::get('/refector', [RefectorController::class, 'index'])->name('student.menu.index');            // Günlük/haftalık menü, öğün saatleri
-
-        // 4. Aidat ve Borç Takibi
-        Route::get('/payment', [PaymentController::class, 'index'])->name('student.aidat.index');         // Aidat geçmişi ve borç bilgileri
-
-        // 5. Ziyaretçi Bildirimi
-        Route::get('/visitor', [StudentVisitorController::class, 'index'])->name('student.ziyaretci.index');       // Mevcut ziyaretçi başvurularını listeleme
-
-
-        // 6. Duyuru Sistemi
-        Route::get('/announcement', [AnnouncementController::class, 'index'])->name('student.duyuru.index');      // Duyuruların listesi
-
-        // 7. Dilek ve Şikayet Bildirimi
-        Route::get('/complain', [ComplaintController::class, 'index'])->name('student.sikayet.index');       // Dilek/şikayet listesi
-
-    });
-
-
-
+    // 7. Dilek ve Şikayet Bildirimi
+    Route::get('/complain', [ComplaintController::class, 'index'])->name('student.sikayet.index');
 });
 
 // İlçeleri getir
