@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Duyuru Sistemi') }}
+            {{ __('Yemekhane Menüsü') }}
         </h2>
     </x-slot>
 
@@ -62,11 +62,39 @@
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-gray-900 dark:text-gray-100">
-                            Duyuru sistemi içeriği buraya gelecek
+                            <h2 class="text-2xl font-semibold mb-6">Yemekhane Menüsü</h2>
+
+                            <div class="space-y-4">
+                                @forelse($menus as $menu)
+                                    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                            {{ $menu->date->format('d.m.Y') }} Menüsü
+                                        </h3>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <h4 class="font-medium text-gray-700 dark:text-gray-300">Kahvaltı</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">{{ $menu->breakfast }}</p>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-700 dark:text-gray-300">Öğle Yemeği</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">{{ $menu->lunch }}</p>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-700 dark:text-gray-300">Akşam Yemeği</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">{{ $menu->dinner }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="text-center text-gray-500 dark:text-gray-400">
+                                        Henüz menü planı bulunmamaktadır.
+                                    </div>
+                                @endforelse
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-app-layout> 
