@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\RoomController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\student\AnnouncementController;
 use App\Http\Controllers\student\ComplaintController;
 use App\Http\Controllers\student\PermissionController;
