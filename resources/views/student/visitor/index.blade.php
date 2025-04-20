@@ -1,9 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Ziyaretçi Bildirimleri') }}
-        </h2>
-    </x-slot>
+@extends('student.layouts.dashboard')
+
+@section('title', 'Duyurular')
+@section('content')
 
     <!-- Flex Container: Sidebar ve İçerik Yan Yana -->
 
@@ -62,5 +60,4 @@
                 </div><!-- bg-white -->
             </div><!-- max-w-7xl -->
         </div><!-- flex-1 -->
-    </div><!-- flex -->
-</x-app-layout>
+@endsection
