@@ -39,6 +39,11 @@
                     <i class="fas fa-tools mr-3"></i>
                     <span>Bakım Talepleri</span>
                 </a>
+                <a href="/admin/rezervasyon" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-tools mr-3"></i>
+                    <span>Rezervasyon Talepleri</span>
+                </a>
+
             </nav>
         </aside>
 
@@ -82,7 +87,7 @@
         // Profile dropdown toggle
         const profileButton = document.getElementById('profileButton');
         const profileMenu = document.getElementById('profileMenu');
-        
+
         profileButton.addEventListener('click', () => {
             profileMenu.classList.toggle('hidden');
         });
