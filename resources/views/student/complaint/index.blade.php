@@ -1,10 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dilek ve Şikayet Bildirimi') }}
-        </h2>
-    </x-slot>
+@extends('student.layouts.dashboard')
 
+@section('title', 'Duyurular')
+@section('content')
 
 
         <!-- Ana İçerik Bölgesi -->
@@ -64,4 +61,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

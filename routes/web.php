@@ -107,6 +107,11 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::get('/maintenance', function() {
             return view('admin.maintenance.index');
         })->name('admin.maintenance');
+
+        //Rezervasyon Talepleri
+        Route::get('/rezervasyon', function() {
+            return view('admin.rezervasyon.index');
+        })->name('admin.rezervasyon');
     });
 });
 

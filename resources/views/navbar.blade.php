@@ -28,5 +28,6 @@
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
         <a href="{{ route('login') }}" class="btn-getstarted">Giriş Yap</a>
+        <a href="{{ route('register') }}" class="btn-getstarted">Kayıt Ol</a>
     </div>
 </header>

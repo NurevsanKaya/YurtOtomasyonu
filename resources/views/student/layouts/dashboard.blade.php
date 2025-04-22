@@ -9,7 +9,7 @@
         <!-- Sidebar -->
         <aside class="w-64 bg-white shadow-md border-r">
             <div class="p-6 border-b">
-                <h1 class="text-lg font-semibold text-gray-800">Menü</h1>
+                <h1 class="text-lg font-semibold text-gray-800">Öğrenci Paneli</h1>
             </div>
             <nav class="flex flex-col p-4 space-y-2 text-sm text-gray-700">
                 <a href="{{ route('student.duyuru.index') }}"
@@ -43,12 +43,12 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 p-6">
-            <div class="bg-white rounded shadow p-4">
-                <h1 class="text-2xl font-bold mb-4">Hoş geldin {{ Auth::user()->name }} 👋</h1>
-                <p class="text-gray-600">Buradan tüm işlemlerini yönetebilirsin.</p>
-            </div>
+        <!-- İçerik Alanı -->
+        <main class="flex-1 p-8">
+            @yield('content')
         </main>
+
+
+
     </div>
 </x-app-layout>
