@@ -39,8 +39,8 @@
                     <i class="fas fa-tools mr-3"></i>
                     <span>Bakım Talepleri</span>
                 </a>
-                <a href="/admin/rezervasyon" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
-                    <i class="fas fa-tools mr-3"></i>
+                <a href="{{ route('admin.reservations.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-calendar-check mr-3"></i>
                     <span>Rezervasyon Talepleri</span>
                 </a>
 

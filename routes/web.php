@@ -12,6 +12,8 @@ use App\Http\Controllers\student\RefectorController;
 use App\Http\Controllers\student\StudentPaymentController;
 use App\Http\Controllers\student\StudentRoomController;
 use App\Http\Controllers\student\StudentVisitorController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -109,9 +111,9 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         })->name('admin.maintenance');
 
         //Rezervasyon Talepleri
-        Route::get('/rezervasyon', function() {
-            return view('admin.rezervasyon.index');
-        })->name('admin.rezervasyon');
+        Route::get('/reservations', [AdminReservationController::class, 'index'])->name('admin.reservations.index');
+        Route::post('/reservations/{reservation}/approve', [AdminReservationController::class, 'approve'])->name('admin.reservations.approve');
+        Route::post('/reservations/{reservation}/reject', [AdminReservationController::class, 'reject'])->name('admin.reservations.reject');
     });
 });
 
@@ -144,6 +146,10 @@ Route::get('/district/{city}', function ($city) {
     $districts = \App\Models\District::where('city_id', $city)->get();
     return response()->json($districts);
 });
+
+// Rezervasyon rotası
+Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation.index');
+Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
 
 require __DIR__.'/auth.php';
 
