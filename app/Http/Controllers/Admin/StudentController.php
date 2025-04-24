@@ -107,9 +107,15 @@ class StudentController extends Controller
             $user = User::create([
                 'name' => $validated['first_name'] . ' ' . $validated['last_name'],
                 'email' => $validated['email'],
-                'password' => Hash::make(Str::random(10)), // Rastgele şifre
-                'role_id' => 2 // Öğrenci rolü
+                'password' => Hash::make($validated['tc']), // TC'yi şifre olarak kullan
+                'role_id' => 2, // Öğrenci rolü
+                'password_changed' => false // İlk şifre değiştirilmedi
             ]);
+
+            // Session'a şifreyi flash data olarak ekle
+            session()->flash('student_password', $validated['tc']);
+            session()->flash('student_tc', $validated['tc']);
+            session()->flash('student_email', $validated['email']);
 
             // Adres oluştur
             $address = Address::create([

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\ReservationController as AdminReservationControll
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Middleware\ForcePasswordChange;
 
 Route::get('/', function () {
     return view('Welcome');
@@ -48,14 +49,34 @@ Route::get('/fourroom', function () {
 
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard route'u global tanımlamasını kaldırıyorum çünkü artık ForcePasswordChange içinde tanımlandı
+// Route::get('/dashboard', function () {
+//    return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // ForcePasswordChange middleware'i sadece giriş yapmış kullanıcılara uygulanacak
+    Route::middleware([ForcePasswordChange::class])->group(function () {
+        // Şifre değişikliği gereken kullanıcılar için erişim kısıtlaması olan rotalar
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+        
+        // Öğrenci rotaları
+        Route::prefix('student')->group(function () {
+            Route::get('/permission', [PermissionController::class, 'index'])->name('student.izin.index');
+            Route::get('/rooms', [StudentRoomController::class, 'index'])->name('student.oda.index');
+            Route::get('/refector', [RefectorController::class, 'index'])->name('student.menu.index');
+            Route::get('/aidat', [StudentPaymentController::class, 'index'])->name('student.aidat.index');
+            Route::get('/visitor', [StudentVisitorController::class, 'index'])->name('student.ziyaretci.index');
+            Route::get('/duyuru', [App\Http\Controllers\student\AnnouncementController::class, 'index'])->name('student.duyuru.index');
+            Route::get('/complain', [ComplaintController::class, 'index'])->name('student.sikayet.index');
+        });
+    });
 });
 
 // Admin routes
@@ -119,30 +140,6 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     });
 });
 
-// Öğrenci korumalı rotalar
-Route::prefix('student')->middleware(['web', 'auth'])->group(function () {
-    // 1. İzin Alma Sistemi
-    Route::get('/permission', [PermissionController::class, 'index'])->name('student.izin.index');
-
-    // 2. Oda Bilgileri Görüntüleme ve Değişiklik Talebi
-    Route::get('/rooms', [StudentRoomController::class, 'index'])->name('student.oda.index');
-
-    // 3. Yemekhane Takibi ve Menü Görüntüleme
-    Route::get('/refector', [RefectorController::class, 'index'])->name('student.menu.index');
-
-    // 4. Aidat ve Borç Takibi
-    Route::get('/aidat', [StudentPaymentController::class, 'index'])->name('student.aidat.index');
-
-    // 5. Ziyaretçi Bildirimi
-    Route::get('/visitor', [StudentVisitorController::class, 'index'])->name('student.ziyaretci.index');
-
-    // 6. Duyuru Sistemi
-    Route::get('/duyuru', [App\Http\Controllers\student\AnnouncementController::class, 'index'])->name('student.duyuru.index');
-
-    // 7. Dilek ve Şikayet Bildirimi
-    Route::get('/complain', [ComplaintController::class, 'index'])->name('student.sikayet.index');
-});
-
 // İlçeleri getir
 Route::get('/district/{city}', function ($city) {
     $districts = \App\Models\District::where('city_id', $city)->get();
@@ -152,6 +149,12 @@ Route::get('/district/{city}', function ($city) {
 // Rezervasyon rotası
 Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation.index');
 Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
+
+// Şifre Değiştirme Rotaları - Bu rotalar ForcePasswordChange middleware kapsamı dışında olmalı
+Route::middleware(['auth'])->group(function () {
+    Route::get('/password/change', [ProfileController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('/password/change', [ProfileController::class, 'changePassword'])->name('password.change.save');
+});
 
 require __DIR__.'/auth.php';
 

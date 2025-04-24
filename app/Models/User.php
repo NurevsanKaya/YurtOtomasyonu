@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'password_changed',
     ];
 
     /**
@@ -44,15 +45,27 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_changed' => 'boolean',
         ];
     }
+    
+    /**
+     * İlk şifre değişikliği yapıldı mı kontrolü
+     *
+     * @return bool
+     */
+    public function hasChangedPassword(): bool
+    {
+        return $this->password_changed;
+    }
+    
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
+    
     public function student()
     {
         return $this->hasOne(Student::class);
     }
-
 }
