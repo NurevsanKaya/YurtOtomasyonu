@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Student;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
@@ -30,6 +33,12 @@ class ReservationController extends Controller
             return redirect()->back()->with('error', 'Bu TC kimlik numarası ile kayıtlı öğrenci zaten var.');
         }
 
+        // Aynı email ile kullanıcı var mı kontrolü
+        $userExists = User::where('email', $reservation->email)->exists();
+        if ($userExists) {
+            return redirect()->back()->with('error', 'Bu e-posta adresi ile kayıtlı kullanıcı zaten var.');
+        }
+
         // Oda seçildi mi kontrolü
         if (!$reservation->room_id) {
             return redirect()->back()->with('error', 'Bu rezervasyonda oda seçilmemiş. Onaylayamazsınız.');
@@ -41,32 +50,56 @@ class ReservationController extends Controller
             return redirect()->back()->with('error', 'Seçilen oda dolu. Lütfen önce öğrencinin oda seçimini değiştirin.');
         }
 
-        // Öğrenciyi oluştur
-        Student::create([
-            'first_name' => $reservation->first_name,
-            'last_name' => $reservation->last_name,
-            'tc' => $reservation->tc,
-            'phone' => $reservation->phone,
-            'email' => $reservation->email,
-            'address_id' => $reservation->address_id,
-            'birth_date' => $reservation->birth_date,
-            'registration_date' => now(),
-            'room_id' => $reservation->room_id,
-            'medical_condition' => $reservation->medical_condition,
-            'emergency_contact' => $reservation->emergency_contact,
-            'is_active' => true,
-        ]);
+        DB::beginTransaction();
 
-        // Odanın doluluk sayısını artır
-        $room->current_occupants += 1;
-        $room->save();
+        try {
+            // User oluştur
+            $user = User::create([
+                'name' => $reservation->first_name . ' ' . $reservation->last_name,
+                'email' => $reservation->email,
+                'password' => Hash::make($reservation->tc), // TC'yi şifre olarak kullan
+                'role_id' => 2, // Öğrenci rolü
+                'password_changed' => false // İlk şifre değiştirilmedi
+            ]);
 
-        // Rezervasyon durumunu güncelle
-        $reservation->update([
-            'status' => 'onaylandı'
-        ]);
+            // Öğrenciyi oluştur
+            Student::create([
+                'user_id' => $user->id,
+                'first_name' => $reservation->first_name,
+                'last_name' => $reservation->last_name,
+                'tc' => $reservation->tc,
+                'phone' => $reservation->phone,
+                'email' => $reservation->email,
+                'address_id' => $reservation->address_id,
+                'birth_date' => $reservation->birth_date,
+                'registration_date' => now(),
+                'room_id' => $reservation->room_id,
+                'medical_condition' => $reservation->medical_condition,
+                'emergency_contact' => $reservation->emergency_contact,
+                'is_active' => true,
+            ]);
 
-        return redirect()->back()->with('success', 'Rezervasyon onaylandı ve öğrenci kaydı oluşturuldu.');
+            // Odanın doluluk sayısını artır
+            $room->current_occupants += 1;
+            $room->save();
+
+            // Rezervasyon durumunu güncelle
+            $reservation->update([
+                'status' => 'onaylandı'
+            ]);
+
+            DB::commit();
+
+            // Şifre bilgisini session'a kaydet
+            session()->flash('student_password', $reservation->tc);
+            session()->flash('student_tc', $reservation->tc);
+            session()->flash('student_email', $reservation->email);
+
+            return redirect()->back()->with('success', 'Rezervasyon onaylandı ve öğrenci kaydı oluşturuldu.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'İşlem sırasında bir hata oluştu: ' . $e->getMessage());
+        }
     }
 
     /**

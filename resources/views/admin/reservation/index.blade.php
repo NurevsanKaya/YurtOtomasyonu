@@ -9,6 +9,20 @@
         </div>
     @endif
 
+    @if(session('student_password'))
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="font-bold">Yeni Oluşturulan Hesap Bilgileri:</span>
+            <ul class="mt-2">
+                <li><strong>E-posta:</strong> {{ session('student_email') }}</li>
+                <li><strong>TC Kimlik No:</strong> {{ session('student_tc') }}</li>
+                <li><strong>İlk Şifresi (TC):</strong> {{ session('student_password') }}</li>
+            </ul>
+            <p class="mt-2 text-sm italic">
+                Bu bilgiler sadece bir kez gösterilecektir. Öğrenciye iletmeyi unutmayınız!
+            </p>
+        </div>
+    @endif
+
     @if(session('error'))
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <span class="block sm:inline">{{ session('error') }}</span>
