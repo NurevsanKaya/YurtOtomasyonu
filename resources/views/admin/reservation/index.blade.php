@@ -25,6 +25,7 @@
                     <th class="py-3 px-6 text-left">TC</th>
                     <th class="py-3 px-6 text-left">Telefon</th>
                     <th class="py-3 px-6 text-left">E-posta</th>
+                    <th class="py-3 px-6 text-left">Oda</th>
                     <th class="py-3 px-6 text-left">Kayıt Tarihi</th>
                     <th class="py-3 px-6 text-center">Durum</th>
                     <th class="py-3 px-6 text-center">İşlemler</th>
@@ -39,6 +40,18 @@
                     <td class="py-3 px-6 text-left">{{ $reservation->tc }}</td>
                     <td class="py-3 px-6 text-left">{{ $reservation->phone }}</td>
                     <td class="py-3 px-6 text-left">{{ $reservation->email }}</td>
+                    <td class="py-3 px-6 text-left">
+                        @if($reservation->room)
+                            <span class="tooltip" title="Kapasite: {{ $reservation->room->capacity }}, Doluluk: {{ $reservation->room->current_occupants }}">
+                                {{ $reservation->room->room_number }} - {{ $reservation->room->room_type }}
+                                <span class="text-xs ml-1">
+                                    ({{ $reservation->room->current_occupants }}/{{ $reservation->room->capacity }})
+                                </span>
+                            </span>
+                        @else
+                            <span class="text-red-500">Oda Seçilmemiş</span>
+                        @endif
+                    </td>
                     <td class="py-3 px-6 text-left">
                         @if($reservation->registration_date)
                             @if(is_string($reservation->registration_date))
@@ -90,4 +103,28 @@
             </tbody>
         </table>
     </div>
+
+    <style>
+        /* Tooltip stilleri */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .tooltip:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            z-index: 1;
+            font-size: 12px;
+        }
+    </style>
 @endsection 

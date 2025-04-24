@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use App\Models\Student;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,7 +15,8 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        return view('reservation.index');
+        $rooms = Room::all(); // Tüm odaları getir
+        return view('reservation.index', compact('rooms'));
     }
 
     /**
@@ -31,6 +33,7 @@ class ReservationController extends Controller
             'birth_date' => 'required|date',
             'medical_condition' => 'nullable|string',
             'emergency_contact' => 'required|string',
+            'room_id' => 'required|exists:rooms,id',
         ]);
 
         if ($validator->fails()) {
@@ -43,6 +46,12 @@ class ReservationController extends Controller
             return response()->json(['error' => 'Bu TC kimlik numarası ile kayıtlı bir öğrenci zaten mevcut.'], 422);
         }
 
+        // Seçilen oda dolu mu kontrolü
+        $room = Room::findOrFail($request->room_id);
+        if ($room->current_occupants >= $room->capacity) {
+            return response()->json(['error' => 'Seçilen oda dolu. Lütfen başka bir oda seçin.'], 422);
+        }
+
         $reservation = Reservation::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -52,6 +61,7 @@ class ReservationController extends Controller
             'birth_date' => $request->birth_date,
             'medical_condition' => $request->medical_condition,
             'emergency_contact' => $request->emergency_contact,
+            'room_id' => $request->room_id,
             'registration_date' => now(),
             'status' => 'beklemede',
         ]);

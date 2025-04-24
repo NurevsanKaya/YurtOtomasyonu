@@ -62,6 +62,44 @@
                             </div>
                         </div>
 
+                        <!-- Oda Seçimi Bölümü -->
+                        <div class="form-group mb-3">
+                            <label for="room_id">Oda Seçimi <span class="text-danger">*</span></label>
+                            <select class="form-control" id="room_id" name="room_id" required>
+                                <option value="">Oda Seçiniz</option>
+                                @foreach($rooms as $room)
+                                    @php
+                                        $isDolu = $room->current_occupants >= $room->capacity;
+                                        $dolulukOran = ($room->current_occupants / $room->capacity) * 100;
+                                    @endphp
+                                    <option value="{{ $room->id }}" 
+                                        {{ $isDolu ? 'disabled' : '' }}
+                                        data-doluluk="{{ $dolulukOran }}"
+                                        data-kapasite="{{ $room->capacity }}"
+                                        data-current="{{ $room->current_occupants }}">
+                                        {{ $room->room_number }} - {{ $room->room_type }} - 
+                                        Kat: {{ $room->floor }} - 
+                                        Doluluk: {{ $room->current_occupants }}/{{ $room->capacity }}
+                                        {{ $isDolu ? '(DOLU)' : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="room_id_error"></div>
+                        </div>
+
+                        <!-- Oda Doluluk Göstergesi -->
+                        <div class="mb-3" id="dolulukBilgisi" style="display:none;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title" id="odaBaslik"></h5>
+                                    <div class="progress mb-3">
+                                        <div id="dolulukBar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p id="odaDetay" class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group mb-3">
                             <label for="medical_condition">Sağlık Durumu</label>
                             <textarea class="form-control" id="medical_condition" name="medical_condition" rows="3"></textarea>
@@ -107,6 +145,44 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('reservationForm');
         const submitBtn = document.getElementById('submitBtn');
+        const roomSelect = document.getElementById('room_id');
+        const dolulukBilgisi = document.getElementById('dolulukBilgisi');
+        const dolulukBar = document.getElementById('dolulukBar');
+        const odaBaslik = document.getElementById('odaBaslik');
+        const odaDetay = document.getElementById('odaDetay');
+
+        // Oda seçimi değiştiğinde doluluk bilgilerini göster
+        roomSelect.addEventListener('change', function() {
+            if (this.value) {
+                const selectedOption = this.options[this.selectedIndex];
+                const doluluk = selectedOption.dataset.doluluk;
+                const kapasite = selectedOption.dataset.kapasite;
+                const current = selectedOption.dataset.current;
+                const odaNo = selectedOption.textContent.split('-')[0].trim();
+                
+                // Doluluk çubuğunu güncelle
+                dolulukBar.style.width = doluluk + '%';
+                
+                // Doluluk oranına göre renk belirleme
+                if (doluluk < 50) {
+                    dolulukBar.className = 'progress-bar bg-success';
+                } else if (doluluk < 75) {
+                    dolulukBar.className = 'progress-bar bg-warning';
+                } else {
+                    dolulukBar.className = 'progress-bar bg-danger';
+                }
+                
+                // Oda bilgilerini göster
+                odaBaslik.textContent = odaNo + ' - Doluluk Durumu';
+                odaDetay.textContent = 'Mevcut Kişi: ' + current + ' / Kapasite: ' + kapasite;
+                
+                // Bilgi kartını göster
+                dolulukBilgisi.style.display = 'block';
+            } else {
+                // Seçim kaldırıldığında bilgi kartını gizle
+                dolulukBilgisi.style.display = 'none';
+            }
+        });
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -156,6 +232,7 @@
                 if (data.success) {
                     // Başarılı ise formu temizle ve modalı göster
                     form.reset();
+                    dolulukBilgisi.style.display = 'none'; // Doluluk bilgisini gizle
                     const modal = new bootstrap.Modal(document.getElementById('reservationSuccessModal'));
                     modal.show();
                 } else if (data.errors) {
