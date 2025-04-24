@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
@@ -42,7 +43,7 @@ class StudentController extends Controller
         try {
             // Debug için tüm gelen verileri loglayalım
             Log::info('Gelen form verileri:', $request->all());
-            
+
             // Validasyon kuralları
             $validated = $request->validate([
                 // Öğrenci bilgileri
@@ -57,6 +58,7 @@ class StudentController extends Controller
                 'emergency_contact' => 'required|string',
                 'is_active' => 'boolean',
 
+                //exist:girilen değerlerin varlığını kontrol et
                 // Adres bilgileri
                 'city_id' => 'required|exists:cities,id',
                 'district_id' => 'required|exists:districts,id',
@@ -90,6 +92,15 @@ class StudentController extends Controller
                 return redirect()->back()
                     ->withInput()
                     ->withErrors(['tc' => 'Bu TC kimlik numarası zaten kullanımda.']);
+            }
+            
+            // Oda kapasitesi kontrolü
+            $room = Room::findOrFail($validated['room_id']);
+            if ($room->current_occupants >= $room->capacity) {
+                DB::rollBack();
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['room_id' => 'Seçilen oda dolu, lütfen başka bir oda seçin.']);
             }
 
             // User oluştur
@@ -135,9 +146,7 @@ class StudentController extends Controller
             ]);
 
             // Odanın doluluk sayısını arttır
-            $room = Room::findOrFail($validated['room_id']);
-            $room->current_occupants += 1;
-            $room->save();
+            $room->increment('current_occupants');
 
             DB::commit();
             Log::info('Öğrenci başarıyla eklendi', ['student_id' => $student->id]);
@@ -172,88 +181,175 @@ class StudentController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Student $student)
     {
         try {
-            $student = Student::findOrFail($id);
+            // Debug için tüm gelen verileri loglayalım
+            Log::info('Güncelleme form verileri:', $request->all());
 
             // Validasyon kuralları
             $validated = $request->validate([
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'tc' => 'required|string|size:11|unique:students,tc,' . $id,
-                'phone' => 'required|string|max:20',
-                'email' => 'required|email|unique:students,email,' . $id,
-                'birth_date' => 'required|date',
+                // Öğrenci bilgileri
+                'first_name' => 'required|string|max:50',
+                'last_name' => 'required|string|max:50',
+                'tc' => ['required', 'digits:11', Rule::unique('students')->ignore($student->id)],
+                'phone' => 'required|string',
+                'email' => ['required', 'email', 'max:100', Rule::unique('students')->ignore($student->id)],
+                'birth_date' => 'required|date|before:today',
                 'registration_date' => 'required|date',
-                'medical_condition' => 'nullable|string',
+                'medical_condition' => 'nullable|string|max:255',
                 'emergency_contact' => 'required|string',
-                'room_id' => 'nullable|exists:rooms,id',
+                'is_active' => 'boolean',
+
+                // Adres bilgileri
+                'city_id' => 'required|exists:cities,id',
+                'district_id' => 'required|exists:districts,id',
+                'address_line' => 'required|string|max:255',
+                'postal_code' => 'required|string|max:5',
+
+                // Oda bilgisi
+                'room_id' => 'required|exists:rooms,id',
+
+                // Veli bilgileri
+                'guardian_first_name' => 'required|string|max:50',
+                'guardian_last_name' => 'required|string|max:50',
+                'guardian_phone' => 'required|string',
+                'guardian_email' => 'required|email|max:100',
+                'guardian_relationship' => 'required|string|max:50'
             ]);
 
             DB::beginTransaction();
 
-            // User bilgilerini güncelle
-            $student->user->update([
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
+            // Email kontrolü (users tablosunda)
+            if ($validated['email'] !== $student->email) {
+                if (User::where('email', $validated['email'])->where('id', '!=', $student->user_id)->exists()) {
+                    DB::rollBack();
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors(['email' => 'Bu e-posta adresi zaten kullanımda.']);
+                }
+            }
+
+            // TC kontrolü
+            if ($validated['tc'] !== $student->tc) {
+                if (Student::where('tc', $validated['tc'])->where('id', '!=', $student->id)->exists()) {
+                    DB::rollBack();
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors(['tc' => 'Bu TC kimlik numarası zaten kullanımda.']);
+                }
+            }
+
+            $oldRoomId = $student->room_id;
+            $newRoomId = $validated['room_id'];
+
+            // Oda değişikliği yapılıyorsa
+            if ($oldRoomId != $newRoomId) {
+                $newRoom = Room::findOrFail($newRoomId);
+                
+                // Yeni odanın kapasitesi kontrolü
+                if ($newRoom->current_occupants >= $newRoom->capacity) {
+                    DB::rollBack();
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors(['room_id' => 'Seçilen oda dolu, lütfen başka bir oda seçin.']);
+                }
+                
+                // Eski odanın doluluk sayısını azalt
+                $oldRoom = Room::findOrFail($oldRoomId);
+                $oldRoom->decrement('current_occupants');
+                
+                // Yeni odanın doluluk sayısını arttır
+                $newRoom->increment('current_occupants');
+            }
+
+            // Adresi güncelle
+            $address = Address::findOrFail($student->address_id);
+            $address->update([
+                'district_id' => $validated['district_id'],
+                'postal_code' => $validated['postal_code'],
+                'address_line' => $validated['address_line'],
             ]);
 
-            // Öğrenci bilgilerini güncelle
+            // Kullanıcıyı güncelle
+            $user = User::findOrFail($student->user_id);
+            $user->update([
+                'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+                'email' => $validated['email'],
+            ]);
+
+            // Öğrenciyi güncelle
             $student->update([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'tc' => $request->tc,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'birth_date' => $request->birth_date,
-                'registration_date' => $request->registration_date,
-                'medical_condition' => $request->medical_condition,
-                'emergency_contact' => $request->emergency_contact,
-                'room_id' => $request->room_id,
+                'room_id' => $validated['room_id'],
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'tc' => $validated['tc'],
+                'phone' => $validated['phone'],
+                'email' => $validated['email'],
+                'birth_date' => $validated['birth_date'],
+                'registration_date' => $validated['registration_date'],
+                'medical_condition' => $validated['medical_condition'] ?? null,
+                'emergency_contact' => $validated['emergency_contact'],
+                'is_active' => $request->has('is_active'),
+            ]);
+
+            // Veliyi güncelle
+            $guardian = Guardian::where('student_id', $student->id)->firstOrFail();
+            $guardian->update([
+                'first_name' => $validated['guardian_first_name'],
+                'last_name' => $validated['guardian_last_name'],
+                'phone' => $validated['guardian_phone'],
+                'email' => $validated['guardian_email'],
+                'relationship' => $validated['guardian_relationship']
             ]);
 
             DB::commit();
-
-            Log::info('Öğrenci başarıyla güncellendi', ['student_id' => $id]);
+            Log::info('Öğrenci başarıyla güncellendi', ['student_id' => $student->id]);
 
             return redirect()->route('admin.students.index')
-                ->with('success', 'Öğrenci başarıyla güncellendi.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Validasyon hatası:', [
-                'errors' => $e->errors()
-            ]);
-            return back()->withErrors($e->errors())->withInput();
+                ->with('success', 'Öğrenci bilgileri başarıyla güncellendi');
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            Log::error('Validasyon hatası:', ['errors' => $e->errors()]);
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Öğrenci güncellenirken hata oluştu: ' . $e->getMessage());
-            return back()->with('error', 'Öğrenci güncellenirken bir hata oluştu: ' . $e->getMessage())->withInput();
+            return redirect()->back()
+                ->with('error', 'Öğrenci güncellenirken bir hata oluştu: ' . $e->getMessage())
+                ->withInput();
         }
     }
 
     public function destroy($id)
     {
         try {
-            $student = Student::findOrFail($id);
-
             DB::beginTransaction();
-
-            // Önce user'ı sil
-            $student->user->delete();
-
-            // Sonra öğrenciyi sil
+            
+            $student = Student::findOrFail($id);
+            
+            // Öğrencinin odası var mı kontrol et
+            if ($student->room_id) {
+                // Odanın doluluk sayısını azalt
+                $room = Room::findOrFail($student->room_id);
+                $room->current_occupants = max(0, $room->current_occupants - 1);
+                $room->save();
+            }
+            
+            // Öğrenciyi sil (cascade delete tanımlanmışsa ilişkili kayıtlar da silinecektir)
             $student->delete();
-
+            
             DB::commit();
-
-            Log::info('Öğrenci başarıyla silindi', ['student_id' => $id]);
-
             return redirect()->route('admin.students.index')
-                ->with('success', 'Öğrenci başarıyla silindi.');
+                ->with('success', 'Öğrenci başarıyla silindi');
+                
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Öğrenci silinirken hata oluştu: ' . $e->getMessage());
-            return back()->with('error', 'Öğrenci silinirken bir hata oluştu: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Öğrenci silinirken bir hata oluştu: ' . $e->getMessage());
         }
     }
 }

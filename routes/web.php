@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\RoomController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\student\AnnouncementController;
 use App\Http\Controllers\student\ComplaintController;
 use App\Http\Controllers\student\PermissionController;
@@ -12,6 +12,8 @@ use App\Http\Controllers\student\RefectorController;
 use App\Http\Controllers\student\StudentPaymentController;
 use App\Http\Controllers\student\StudentRoomController;
 use App\Http\Controllers\student\StudentVisitorController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -64,7 +66,7 @@ Route::get('/admin', function() {
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'authenticate'])->name('admin.authenticate');
 
-// Admin protected routes
+// Admin rotaları
 Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     Route::middleware([AdminMiddleware::class])->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -84,11 +86,10 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         })->name('admin.rooms');
 
         Route::get('rooms', [RoomController::class, 'index'])->name('admin.rooms.index');
-        Route::resource('rooms', RoomController::class);
 
-
-
-        Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
+        Route::post('/rooms', [RoomController::class, 'store'])->name('admin.rooms.store');
+        Route::put('/rooms/{id}', [RoomController::class, 'update'])->name('admin.rooms.update');
+        Route::delete('/rooms/{id}', [RoomController::class, 'destroy'])->name('admin.rooms.destroy');
 
         // Ödeme yönetimi
         Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments');
@@ -112,9 +113,9 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         })->name('admin.maintenance');
 
         //Rezervasyon Talepleri
-        Route::get('/rezervasyon', function() {
-            return view('admin.rezervasyon.index');
-        })->name('admin.rezervasyon');
+        Route::get('/reservations', [AdminReservationController::class, 'index'])->name('admin.reservations.index');
+        Route::post('/reservations/{reservation}/approve', [AdminReservationController::class, 'approve'])->name('admin.reservations.approve');
+        Route::post('/reservations/{reservation}/reject', [AdminReservationController::class, 'reject'])->name('admin.reservations.reject');
     });
 });
 
@@ -147,6 +148,10 @@ Route::get('/district/{city}', function ($city) {
     $districts = \App\Models\District::where('city_id', $city)->get();
     return response()->json($districts);
 });
+
+// Rezervasyon rotası
+Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation.index');
+Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
 
 require __DIR__.'/auth.php';
 

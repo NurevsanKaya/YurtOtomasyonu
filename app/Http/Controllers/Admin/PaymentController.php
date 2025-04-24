@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Payment;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
@@ -27,10 +28,12 @@ class PaymentController extends Controller
             'student_id' => 'required|exists:students,id',
             'amount' => 'required|numeric|min:0',
             'payment_date' => 'required|date',
-            'payment_status' => 'required|in:Ödendi,Beklemede,İptal',
-            'payment_type' => 'required|string',
             'due_date' => 'required|date'
         ]);
+
+        // Ödeme durumu ve türünü otomatik olarak ekle
+        $validated['payment_status'] = 'Ödendi';
+        $validated['payment_type'] = 'Nakit';
 
         Payment::create($validated);
 
@@ -64,10 +67,12 @@ class PaymentController extends Controller
             'student_id' => 'required|exists:students,id',
             'amount' => 'required|numeric|min:0',
             'payment_date' => 'required|date',
-            'payment_status' => 'required|in:Ödendi,Beklemede,İptal',
-            'payment_type' => 'required|string',
             'due_date' => 'required|date'
         ]);
+
+        // Ödeme durumu ve türünü otomatik olarak ekle
+        $validated['payment_status'] = 'Ödendi';
+        $validated['payment_type'] = 'Nakit';
 
         $payment->update($validated);
 

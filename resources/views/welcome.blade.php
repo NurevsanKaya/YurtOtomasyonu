@@ -1,4 +1,3 @@
-
 @extends('home')
 
 @section('content')
@@ -60,101 +59,9 @@
                     <p data-aos="fade-up">
                         Ardes Öğrenci Yurdu, ÇOMÜ Terzioğlu Kampüsü'ndeki tek özel yurttur. Kampüs içinde konforlu yaşam ve tüm fakültelere kolay erişim imkanı.
                     </p>
-                    <a href="#" class="btn btn-get-started" data-bs-toggle="modal" data-bs-target="#rezervasyonModal">
-                        REZERVASYON
+                    <a href="{{ route('reservation.index') }}" class="btn btn-get-started">
+                        REZERVASYON YAP
                     </a>
-                </div>
-                <!-- Modal -->
-                <div class="modal fade" id="rezervasyonModal" tabindex="-1" aria-labelledby="rezervasyonModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="rezervasyonModalLabel">Rezervasyon Formu</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="POST" action="">
-                                    @csrf
-
-                                    <div class="mb-3">
-                                        <input type="text" name="name" class="form-control" placeholder="Ad Soyad" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="text" name="tc_no" class="form-control" placeholder="T.C. Kimlik No" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="text" name="phone" class="form-control" placeholder="Telefon Numarası" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="email" name="email" class="form-control" placeholder="E-posta" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="password" name="password" class="form-control" placeholder="Şifre" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="password" name="password_confirmation" class="form-control" placeholder="Şifre Tekrar" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="text" name="university" class="form-control" placeholder="Üniversite Adı">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="text" name="department" class="form-control" placeholder="Fakülte / Bölüm">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <select name="class" class="form-select">
-                                            <option value="" disabled selected>Sınıf Seçiniz</option>
-                                            <option value="1">1. Sınıf</option>
-                                            <option value="2">2. Sınıf</option>
-                                            <option value="3">3. Sınıf</option>
-                                            <option value="4">4. Sınıf</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <input type="date" name="entry_date" class="form-control" placeholder="Giriş Tarihi" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <select name="stay_duration" class="form-select" required>
-                                            <option value="" disabled selected>Kalma Süresi Seçiniz</option>
-                                            <option value="aylık">Aylık</option>
-                                            <option value="dönemlik">Dönemlik</option>
-                                            <option value="yıllık">1 Yıl</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <select name="room_type" class="form-select">
-                                            <option value="tek">Tek Kişilik</option>
-                                            <option value="iki">2 Kişilik</option>
-                                            <option value="dört">4 Kişilik</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <textarea name="note" class="form-control" placeholder="Açıklama (İsteğe Bağlı)"></textarea>
-                                    </div>
-
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">Gönder</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -802,9 +709,9 @@
                                     <h3 class="name">Adam Aderson</h3>
                                     <blockquote>
                                         <p>
-                                            “There live the blind texts. Separated they live in
+                                            "There live the blind texts. Separated they live in
                                             Bookmarksgrove right at the coast of the Semantics, a large
-                                            language ocean.”
+                                            language ocean."
                                         </p>
                                     </blockquote>
                                 </div>
@@ -817,9 +724,9 @@
                                     <h3 class="name">Lukas Devlin</h3>
                                     <blockquote>
                                         <p>
-                                            “There live the blind texts. Separated they live in
+                                            "There live the blind texts. Separated they live in
                                             Bookmarksgrove right at the coast of the Semantics, a large
-                                            language ocean.”
+                                            language ocean."
                                         </p>
                                     </blockquote>
                                 </div>
@@ -832,9 +739,9 @@
                                     <h3 class="name">Kayla Bryant</h3>
                                     <blockquote>
                                         <p>
-                                            “There live the blind texts. Separated they live in
+                                            "There live the blind texts. Separated they live in
                                             Bookmarksgrove right at the coast of the Semantics, a large
-                                            language ocean.”
+                                            language ocean."
                                         </p>
                                     </blockquote>
                                 </div>
