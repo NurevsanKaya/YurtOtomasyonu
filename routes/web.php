@@ -87,7 +87,9 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
 
         Route::get('rooms', [RoomController::class, 'index'])->name('admin.rooms.index');
 
-        Route::post('/rooms', [RoomController::class, 'store'])->name('rooms.store');
+        Route::post('/rooms', [RoomController::class, 'store'])->name('admin.rooms.store');
+        Route::put('/rooms/{id}', [RoomController::class, 'update'])->name('admin.rooms.update');
+        Route::delete('/rooms/{id}', [RoomController::class, 'destroy'])->name('admin.rooms.destroy');
 
         // Ödeme yönetimi
         Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments');
