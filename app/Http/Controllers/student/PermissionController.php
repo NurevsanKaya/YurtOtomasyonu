@@ -11,7 +11,12 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        return view('student.permission.index');
+        $userId = Auth::id();
+        $permissions = Permission::where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('student.permission.index', compact('permissions'));
     }
 
     public function store(Request $request)
@@ -25,14 +30,20 @@ class PermissionController extends Controller
             'destination_address' => 'required|string',
         ]);
 
-        // Kullanıcı ID'sini ekle
+        // Kullanıcı ID'sini ve başlangıç durumunu ekle
         $validated['user_id'] = Auth::id();
+        $validated['status'] = 'pending';
 
         // İzin kaydını oluştur
         Permission::create($validated);
 
-        // Başarılı mesajıyla geri dön
         return redirect()->route('student.izin.index')
             ->with('success', 'İzin başvurunuz başarıyla gönderildi.');
+
+
+
     }
+
+
+
 }

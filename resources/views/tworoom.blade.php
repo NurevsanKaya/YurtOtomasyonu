@@ -34,8 +34,8 @@
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <h2>Features</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+            <h2>İki Kişilik Oda</h2>
+            <p>Gülnur Öğrenci Yurdu’nun iki kişilik odaları, hem bireysel konforu hem de sosyal yaşamı destekleyecek şekilde özenle tasarlanmıştır</p>
         </div><!-- End Section Title -->
 
         <div class="container">
@@ -48,9 +48,11 @@
                             <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
                                 <i class="bi bi-binoculars"></i>
                                 <div>
-                                    <h4 class="d-none d-lg-block">Konforlu ve Özel Alanlar</h4>
+                                    <h4 class="d-none d-lg-block"> Kişiye Özel Alan</h4>
                                     <p>
-                                        Tek kişilik odalarımızda, kişisel alanınıza sahip olmanın ayrıcalığını yaşayın. Ferah ve modern tasarımıyla, huzurlu bir ortam sunuyoruz.
+                                        Her öğrenciye özel yatak, çalışma masası, sandalye ve kitaplık sayesinde oda arkadaşınızla birlikteyken bile kendi kişisel alanınızı rahatlıkla koruyabilirsiniz.
+
+
                                     </p>
                                 </div>
                             </a>
@@ -59,9 +61,9 @@
                             <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
                                 <i class="bi bi-box-seam"></i>
                                 <div>
-                                    <h4 class="d-none d-lg-block">Tüm İhtiyaçlarınız İçin Tasarlandı</h4>
+                                    <h4 class="d-none d-lg-block"> Rahat ve Sessiz Ortam</h4>
                                     <p>
-                                        Odalarda çalışma masası, rahat bir yatak ve dolap gibi tüm temel ihtiyaçlarınız düşünülerek düzenlenmiştir."
+                                        Geniş ve ferah yapısıyla ders çalışmak veya dinlenmek için ideal bir ortam sunar. Gürültüden uzak yapısıyla odaklanmanızı kolaylaştırır.
                                     </p>
                                 </div>
                             </a>
@@ -70,9 +72,11 @@
                             <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-3">
                                 <i class="bi bi-brightness-high"></i>
                                 <div>
-                                    <h4 class="d-none d-lg-block">Huzurlu Bir Konaklama Deneyimi</h4>
+                                    <h4 class="d-none d-lg-block">Ev Konforunda Tasarım</h4>
                                     <p>
-                                        Sessiz ve sakin ortamı ile verimli çalışabilir veya dinlenmenin tadını çıkarabilirsiniz.
+                                        Modern mobilyalar, doğal ışık alan pencere ve sıcak renk tonlarıyla odalarımız, öğrenciler için hem işlevsel hem de konforlu bir yaşam alanı sunar.
+
+
                                     </p>
                                 </div>
                             </a>

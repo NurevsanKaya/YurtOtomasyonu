@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-            Schema::table('users', function (Blueprint $table) {
-                $table->boolean('password_changed')->default(false);
-            });
+        Schema::table('permission', function (Blueprint $table) {
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending')->after('destination_address');
+        });
 
     }
 
@@ -23,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-
+        Schema::table('permissions', function (Blueprint $table) {
+            //
         });
     }
 };

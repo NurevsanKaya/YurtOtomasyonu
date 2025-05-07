@@ -48,7 +48,7 @@ class User extends Authenticatable
             'password_changed' => 'boolean',
         ];
     }
-    
+
     /**
      * İlk şifre değişikliği yapıldı mı kontrolü
      *
@@ -58,14 +58,16 @@ class User extends Authenticatable
     {
         return $this->password_changed;
     }
-    
+
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
-    
+
     public function student()
     {
         return $this->hasOne(Student::class);
     }
 }
+
+

@@ -43,7 +43,14 @@
                     <i class="fas fa-calendar-check mr-3"></i>
                     <span>Rezervasyon Talepleri</span>
                 </a>
-
+                <a href="{{ route('admin.visitors.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-calendar-check mr-3"></i>
+                    <span>Ziyaretci Talepleri</span>
+                </a>
+                <a href="{{ route('admin.permission.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-calendar-check mr-3"></i>
+                    <span>İzin Talepleri</span>
+                </a>
             </nav>
         </aside>
 

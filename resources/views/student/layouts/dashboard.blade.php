@@ -24,15 +24,12 @@
                    class="block py-2 px-4 rounded hover:bg-gray-100 {{ request()->routeIs('student.oda.index') ? 'bg-gray-200 font-semibold' : '' }}">
                     Oda Bilgileri
                 </a>
-                <a href="{{ route('student.menu.index') }}"
-                   class="block py-2 px-4 rounded hover:bg-gray-100 {{ request()->routeIs('student.menu.index') ? 'bg-gray-200 font-semibold' : '' }}">
-                    Yemekhane
-                </a>
+
                 <a href="{{ route('student.aidat.index') }}"
                    class="block py-2 px-4 rounded hover:bg-gray-100 {{ request()->routeIs('student.aidat.index') ? 'bg-gray-200 font-semibold' : '' }}">
                     Aidat
                 </a>
-                <a href="{{ route('student.ziyaretci.index') }}"
+                <a href="{{ route('student.visitors.index') }}"
                    class="block py-2 px-4 rounded hover:bg-gray-100 {{ request()->routeIs('student.ziyaretci.index') ? 'bg-gray-200 font-semibold' : '' }}">
                     Ziyaretçi
                 </a>

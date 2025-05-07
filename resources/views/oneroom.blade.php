@@ -34,8 +34,8 @@
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <h2>Features</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+            <h2>Tek Kişilik Oda</h2>
+            <p>Gülnur Öğrenci Yurdu’nun ferah ve modern tasarımlı tek kişilik odaları, öğrencilerin konforu ve verimliliği düşünülerek hazırlanmıştır</p>
         </div><!-- End Section Title -->
 
         <div class="container">

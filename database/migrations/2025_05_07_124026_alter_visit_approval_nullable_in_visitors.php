@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-            Schema::table('users', function (Blueprint $table) {
-                $table->boolean('password_changed')->default(false);
-            });
+        Schema::table('visitors', function (Blueprint $table) {
+            $table->boolean('visit_approval')->nullable()->default(null)->change();
+        });
 
     }
 
@@ -23,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-
+        Schema::table('visitors', function (Blueprint $table) {
+            //
         });
     }
 };

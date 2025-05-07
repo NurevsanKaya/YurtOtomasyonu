@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\VisitorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\StudentController;
@@ -58,23 +59,31 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // ForcePasswordChange middleware'i sadece giriş yapmış kullanıcılara uygulanacak
     Route::middleware([ForcePasswordChange::class])->group(function () {
         // Şifre değişikliği gereken kullanıcılar için erişim kısıtlaması olan rotalar
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
-        
+
         // Öğrenci rotaları
         Route::prefix('student')->group(function () {
             Route::get('/permission', [PermissionController::class, 'index'])->name('student.izin.index');
+            Route::post('/izin-basvuru', [PermissionController::class, 'store'])->name('izin.store');
+            Route::get('/izin', [PermissionController::class, 'index'])->name('izin.index');
+
+
+
             Route::get('/rooms', [StudentRoomController::class, 'index'])->name('student.oda.index');
-            Route::get('/refector', [RefectorController::class, 'index'])->name('student.menu.index');
+
             Route::get('/aidat', [StudentPaymentController::class, 'index'])->name('student.aidat.index');
-            Route::get('/visitor', [StudentVisitorController::class, 'index'])->name('student.ziyaretci.index');
+            Route::get('/visitor', [StudentVisitorController::class, 'index'])->name('student.visitors.index');
+            Route::get('/visitors/create', [StudentVisitorController::class, 'create'])->name('student.visitors.create');
+            Route::post('/visitors', [StudentVisitorController::class, 'store'])->name('student.visitors.store');
             Route::get('/duyuru', [App\Http\Controllers\student\AnnouncementController::class, 'index'])->name('student.duyuru.index');
             Route::get('/complain', [ComplaintController::class, 'index'])->name('student.sikayet.index');
+
         });
     });
 });
@@ -137,6 +146,16 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::get('/reservations', [AdminReservationController::class, 'index'])->name('admin.reservations.index');
         Route::post('/reservations/{reservation}/approve', [AdminReservationController::class, 'approve'])->name('admin.reservations.approve');
         Route::post('/reservations/{reservation}/reject', [AdminReservationController::class, 'reject'])->name('admin.reservations.reject');
+         //ziyaretci talepleri
+        Route::get('/visitors', [\App\Http\Controllers\Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
+        Route::post('/visitors/{id}/approve', [VisitorController::class, 'approve'])->name('admin.visitors.approve');
+
+        Route::post('/visitors/{id}/reject', [VisitorController::class, 'reject'])->name('admin.visitors.reject');
+
+        //izin talepleri
+        Route::get('/permission', [\App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('admin.permission.index');
+        Route::post('/admin/leaves/{id}/approve', [\App\Http\Controllers\Admin\PermissionController::class, 'approve'])->name('admin.leaves.approve');
+        Route::post('/admin/leaves/{id}/reject', [\App\Http\Controllers\Admin\PermissionController::class, 'reject'])->name('admin.leaves.reject');
     });
 });
 

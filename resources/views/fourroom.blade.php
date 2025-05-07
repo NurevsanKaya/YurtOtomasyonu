@@ -34,8 +34,8 @@
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <h2>Features</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+            <h2>Dört Kişilik Oda</h2>
+            <p></p>
         </div><!-- End Section Title -->
 
         <div class="container">
@@ -48,9 +48,9 @@
                             <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
                                 <i class="bi bi-binoculars"></i>
                                 <div>
-                                    <h4 class="d-none d-lg-block">Konforlu ve Özel Alanlar</h4>
+                                    <h4 class="d-none d-lg-block">Kişiye Özel Düzen</h4>
                                     <p>
-                                        Tek kişilik odalarımızda, kişisel alanınıza sahip olmanın ayrıcalığını yaşayın. Ferah ve modern tasarımıyla, huzurlu bir ortam sunuyoruz.
+                                        THer öğrenci için ayrı yatak, çalışma masası, sandalye ve dolap alanı sayesinde odada düzenli ve kişisel bir yaşam alanı sağlanır.
                                     </p>
                                 </div>
                             </a>
@@ -59,10 +59,11 @@
                             <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
                                 <i class="bi bi-box-seam"></i>
                                 <div>
-                                    <h4 class="d-none d-lg-block">Tüm İhtiyaçlarınız İçin Tasarlandı</h4>
+                                    <h4 class="d-none d-lg-block">Paylaşım ve Sosyallik</h4>
                                     <p>
-                                        Odalarda çalışma masası, rahat bir yatak ve dolap gibi tüm temel ihtiyaçlarınız düşünülerek düzenlenmiştir."
-                                    </p>
+                                        Dört kişilik odalar, öğrenciler arasında samimi bir arkadaşlık ortamı oluşturur. Ortak yaşam tecrübesi, paylaşım kültürünü geliştirir.
+
+</p>
                                 </div>
                             </a>
                         </li>
@@ -70,9 +71,11 @@
                             <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-3">
                                 <i class="bi bi-brightness-high"></i>
                                 <div>
-                                    <h4 class="d-none d-lg-block">Huzurlu Bir Konaklama Deneyimi</h4>
+                                    <h4 class="d-none d-lg-block"> Geniş ve Ferah Yaşam Alanı</h4>
                                     <p>
-                                        Sessiz ve sakin ortamı ile verimli çalışabilir veya dinlenmenin tadını çıkarabilirsiniz.
+                                        Oda genişliği, ışık alan pencere yapısı ve fonksiyonel mobilyalarıyla kalabalık hissi yaratmaz, konforlu bir barınma ortamı sunar.
+
+
                                     </p>
                                 </div>
                             </a>
