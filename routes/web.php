@@ -21,6 +21,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\ForcePasswordChange;
 use App\Http\Controllers\Admin\DormitoryFeeController;
 use App\Http\Controllers\Admin\RoomPriceController;
+use App\Http\Controllers\DistrictController;
 
 Route::get('/', function () {
     return view('Welcome');
@@ -184,6 +185,7 @@ Route::get('/district/{city}', function ($city) {
 // Rezervasyon rotası
 Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation.index');
 Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
+Route::get('/get-districts/{city_id}', [DistrictController::class, 'getDistricts'])->name('get.districts');
 
 // Şifre Değiştirme Rotaları - Bu rotalar ForcePasswordChange middleware kapsamı dışında olmalı
 Route::middleware(['auth'])->group(function () {

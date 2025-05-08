@@ -62,4 +62,13 @@ class DistrictController extends Controller
     {
         //
     }
+
+    /**
+     * Seçilen ile ait ilçeleri getir
+     */
+    public function getDistricts($cityId)
+    {
+        $districts = District::where('city_id', $cityId)->get();
+        return response()->json($districts);
+    }
 }
