@@ -154,11 +154,6 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::put('/announcements/{announcement}', [App\Http\Controllers\AnnouncementController::class, 'update'])->name('admin.announcements.update');
         Route::delete('/announcements/{announcement}', [App\Http\Controllers\AnnouncementController::class, 'destroy'])->name('admin.announcements.destroy');
 
-        // Bakım talepleri
-        Route::get('/maintenance', function() {
-            return view('admin.maintenance.index');
-        })->name('admin.maintenance');
-
         //Rezervasyon Talepleri
         Route::get('/reservations', [AdminReservationController::class, 'index'])->name('admin.reservations.index');
         Route::post('/reservations/{reservation}/approve', [AdminReservationController::class, 'approve'])->name('admin.reservations.approve');
@@ -200,6 +195,19 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::post('/admin/payments/{id}/approve', [App\Http\Controllers\Admin\PaymentController::class, 'approve'])->name('admin.payments.approve');
     Route::post('/admin/payments/{id}/reject', [App\Http\Controllers\Admin\PaymentController::class, 'reject'])->name('admin.payments.reject');
     Route::get('/admin/payments/{id}/receipt', [App\Http\Controllers\Admin\PaymentController::class, 'showReceipt'])->name('admin.payments.show-receipt');
+});
+
+// Öğrenci şikayet route'ları
+Route::middleware(['auth'])->group(function () {
+    Route::get('/complaint', [App\Http\Controllers\student\ComplaintController::class, 'index'])->name('student.complaint.index');
+    Route::post('/complaint', [App\Http\Controllers\student\ComplaintController::class, 'store'])->name('student.complaint.store');
+});
+
+// Admin şikayet route'ları
+Route::prefix('admin')->middleware(['web', 'auth', AdminMiddleware::class])->group(function () {
+    Route::get('/complaints', [App\Http\Controllers\Admin\ComplaintController::class, 'index'])->name('admin.complaint.index');
+    Route::post('/complaints/{id}/resolve', [App\Http\Controllers\Admin\ComplaintController::class, 'resolve'])->name('admin.complaint.resolve');
+    Route::post('/complaints/{id}/reject', [App\Http\Controllers\Admin\ComplaintController::class, 'reject'])->name('admin.complaint.reject');
 });
 
 require __DIR__.'/auth.php';
