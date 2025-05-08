@@ -48,6 +48,10 @@
                     <i class="fas fa-exclamation-circle mr-3"></i>
                     <span>Şikayet ve Talepler</span>
                 </a>
+                <a href="{{ route('admin.room-change-requests.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-exchange-alt mr-3"></i>
+                    <span>Oda Değişikliği Talepleri</span>
+                </a>
                 <!-- Ödeme Yönetimi -->
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="flex items-center justify-between w-full px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">

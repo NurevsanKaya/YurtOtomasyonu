@@ -89,6 +89,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/payments', [StudentPaymentController::class, 'index'])->name('student.payments.index');
             Route::post('/payments', [StudentPaymentController::class, 'store'])->name('student.payments.store');
             Route::get('/payments/{id}/receipt', [StudentPaymentController::class, 'showReceipt'])->name('student.payments.show-receipt');
+
+            // Oda değişikliği talepleri (öğrenci)
+            Route::get('/room-change/available-rooms', [App\Http\Controllers\student\RoomChangeRequestController::class, 'availableRooms'])->name('student.room-change.available-rooms');
+            Route::post('/room-change/request', [App\Http\Controllers\student\RoomChangeRequestController::class, 'store'])->name('student.room-change.request');
         });
     });
 });
@@ -169,6 +173,11 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::get('/permission', [\App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('admin.permission.index');
         Route::post('/admin/leaves/{id}/approve', [\App\Http\Controllers\Admin\PermissionController::class, 'approve'])->name('admin.leaves.approve');
         Route::post('/admin/leaves/{id}/reject', [\App\Http\Controllers\Admin\PermissionController::class, 'reject'])->name('admin.leaves.reject');
+
+        // Admin oda değişikliği talepleri
+        Route::get('/room-change-requests', [App\Http\Controllers\Admin\RoomChangeRequestController::class, 'index'])->name('admin.room-change-requests.index');
+        Route::post('/room-change-requests/{id}/approve', [App\Http\Controllers\Admin\RoomChangeRequestController::class, 'approve'])->name('admin.room-change-requests.approve');
+        Route::post('/room-change-requests/{id}/reject', [App\Http\Controllers\Admin\RoomChangeRequestController::class, 'reject'])->name('admin.room-change-requests.reject');
     });
 });
 
