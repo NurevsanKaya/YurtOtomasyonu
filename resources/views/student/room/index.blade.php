@@ -1,17 +1,9 @@
 @extends('student.layouts.dashboard')
 
-@section('title', 'Duyurular')
+@section('title', 'Oda Bilgileri')
 @section('content')
-
-    @php
-        use App\Models\Room;
-        // Tüm odaları veya istersen paginate ile sayfalandır
-        $rooms = Room::all();
-    @endphp
-
     <div class="max-w-4xl mx-auto p-4 space-y-6">
-
-        @forelse($rooms as $room)
+        @if($room)
             <div class="bg-white shadow rounded-lg p-6">
                 <h2 class="text-xl font-semibold mb-4">Oda {{ $room->room_number }}</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -40,12 +32,10 @@
                     </div>
                 </div>
             </div>
-        @empty
+        @else
             <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
-                Henüz tanımlı oda bulunmuyor.
+                Henüz bir odaya yerleştirilmediniz.
             </div>
-        @endforelse
-
+        @endif
     </div>
-
 @endsection
