@@ -13,17 +13,15 @@
                     <p class="text-gray-600">Tutar: {{ number_format($debt->amount, 2) }} TL</p>
                 </div>
                 <div>
-                    @if($debt->status === 'bekliyor')
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Bekliyor</span>
-                    @elseif($debt->status === 'ödendi')
+                    @if($debt->status === 'paid')
                         <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Ödendi</span>
                     @else
-                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Ödüyor</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Ödenmedi</span>
                     @endif
                 </div>
             </div>
 
-            @if($debt->status !== 'ödendi')
+            @if($debt->status !== 'paid')
                 <button onclick="openPaymentModal({{ $debt->id }})" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                     Ödeme Yap
                 </button>
@@ -94,7 +92,6 @@
     </div>
 </div>
 
-@push('scripts')
 <script>
 function openPaymentModal(debtId) {
     document.getElementById('debt_id').value = debtId;
@@ -118,5 +115,4 @@ function toggleReceiptUpload() {
     }
 }
 </script>
-@endpush
 @endsection 

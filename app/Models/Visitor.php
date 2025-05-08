@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Visitor extends Model
 {
@@ -20,6 +21,12 @@ class Visitor extends Model
         'check_in',
         'check_out',
         'visit_approval'
+    ];
+
+    protected $casts = [
+        'check_in' => 'datetime',
+        'check_out' => 'datetime',
+        'visit_approval' => 'boolean'
     ];
 
     public function student()

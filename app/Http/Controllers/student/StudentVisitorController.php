@@ -5,6 +5,7 @@ namespace App\Http\Controllers\student;
 use App\Http\Controllers\Controller;
 use App\Models\Visitor;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class StudentVisitorController extends Controller
 {
@@ -33,7 +34,22 @@ class StudentVisitorController extends Controller
             'tc' => 'nullable|digits:11',
             'address' => 'nullable|string',
             'visit_reason' => 'nullable|string',
+            'check_in_date' => 'required|date',
+            'check_in_time' => 'required',
+            'check_out_date' => 'required|date|after_or_equal:check_in_date',
+            'check_out_time' => 'required',
         ]);
+
+        // Giriş tarihi ve saatini birleştir
+        $checkIn = Carbon::parse($request->check_in_date . ' ' . $request->check_in_time);
+        
+        // Çıkış tarihi ve saatini birleştir
+        $checkOut = Carbon::parse($request->check_out_date . ' ' . $request->check_out_time);
+
+        // Çıkış zamanı giriş zamanından sonra olmalı
+        if ($checkOut <= $checkIn) {
+            return back()->withErrors(['check_out_time' => 'Çıkış zamanı giriş zamanından sonra olmalıdır.']);
+        }
 
         Visitor::create([
             'student_id' => auth()->user()->student->id,
@@ -43,7 +59,8 @@ class StudentVisitorController extends Controller
             'tc' => $request->tc,
             'address' => $request->address,
             'visit_reason' => $request->visit_reason,
-            'check_in' => now(),
+            'check_in' => $checkIn,
+            'check_out' => $checkOut,
         ]);
 
         return redirect()->route('student.visitors.index')->with('success', 'Ziyaretçi talebiniz gönderildi.');

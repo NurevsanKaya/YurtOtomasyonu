@@ -109,9 +109,9 @@ class PaymentController extends Controller
                 ->sum('amount');
 
             if ($totalPaid >= $debt->amount) {
-                $debt->status = 'ödendi';
+                $debt->status = 'paid';
             } else {
-                $debt->status = 'ödüyor';
+                $debt->status = 'unpaid';
             }
             $debt->save();
         }

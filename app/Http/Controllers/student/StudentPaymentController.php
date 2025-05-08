@@ -35,6 +35,7 @@ class StudentPaymentController extends Controller
         $payment->amount = Debt::find($request->debt_id)->amount;
         $payment->payment_type = $request->payment_type;
         $payment->payment_status = 'bekliyor';
+        $payment->due_date = Debt::find($request->debt_id)->due_date;
 
         if ($request->hasFile('receipt')) {
             $path = $request->file('receipt')->store('payments', 'public');

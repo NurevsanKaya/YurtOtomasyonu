@@ -19,6 +19,8 @@ use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\ForcePasswordChange;
+use App\Http\Controllers\Admin\DormitoryFeeController;
+use App\Http\Controllers\Admin\RoomPriceController;
 
 Route::get('/', function () {
     return view('Welcome');
@@ -101,7 +103,7 @@ Route::post('/admin/login', [AdminController::class, 'authenticate'])->name('adm
 // Admin rotaları
 Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
     Route::middleware([AdminMiddleware::class])->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
@@ -124,12 +126,24 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::delete('/rooms/{id}', [RoomController::class, 'destroy'])->name('admin.rooms.destroy');
 
         // Ödeme yönetimi
-        Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments');
+        Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
         Route::post('/payments', [PaymentController::class, 'store'])->name('admin.payments.store');
         Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('admin.payments.show');
         Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('admin.payments.edit');
         Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('admin.payments.update');
         Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('admin.payments.destroy');
+        Route::post('/payments/{id}/approve', [PaymentController::class, 'approve'])->name('admin.payments.approve');
+        Route::post('/payments/{id}/reject', [PaymentController::class, 'reject'])->name('admin.payments.reject');
+        Route::get('/payments/{id}/receipt', [PaymentController::class, 'showReceipt'])->name('admin.payments.show-receipt');
+
+        // Yurt ücreti oluşturma
+        Route::post('/dormitory-fees/create-monthly', [DormitoryFeeController::class, 'createMonthlyFees'])->name('admin.dormitory-fees.create-monthly');
+
+        // Oda fiyatları yönetimi
+        Route::get('/room-prices', [RoomPriceController::class, 'index'])->name('admin.room-prices.index');
+        Route::post('/room-prices', [RoomPriceController::class, 'store'])->name('admin.room-prices.store');
+        Route::put('/room-prices/{roomPrice}', [RoomPriceController::class, 'update'])->name('admin.room-prices.update');
+        Route::delete('/room-prices/{roomPrice}', [RoomPriceController::class, 'destroy'])->name('admin.room-prices.destroy');
 
         // Duyuru yönetimi
         Route::get('/announcements', [App\Http\Controllers\AnnouncementController::class, 'index'])->name('admin.announcements.index');
