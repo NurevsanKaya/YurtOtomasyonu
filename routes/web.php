@@ -163,6 +163,7 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::get('/reservations', [AdminReservationController::class, 'index'])->name('admin.reservations.index');
         Route::post('/reservations/{reservation}/approve', [AdminReservationController::class, 'approve'])->name('admin.reservations.approve');
         Route::post('/reservations/{reservation}/reject', [AdminReservationController::class, 'reject'])->name('admin.reservations.reject');
+        Route::get('/reservations/{reservation}/details', [AdminReservationController::class, 'getDetails'])->name('admin.reservations.details');
          //ziyaretci talepleri
         Route::get('/visitors', [\App\Http\Controllers\Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
         Route::post('/visitors/{id}/approve', [VisitorController::class, 'approve'])->name('admin.visitors.approve');
