@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Payment;
-use App\Models\Student;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
+use App\Models\Debt;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
@@ -14,9 +15,13 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::with('student')->get();
-        $students = Student::all();
-        return view('admin.payments.index', compact('payments', 'students'));
+        $payments = Payment::with(['student', 'debt'])
+            ->whereHas('student')
+            ->whereHas('debt')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.payments.index', compact('payments'));
     }
 
     /**
@@ -89,5 +94,55 @@ class PaymentController extends Controller
 
         return redirect()->route('admin.payments')
             ->with('success', 'Ödeme başarıyla silindi.');
+    }
+
+    public function approve($id)
+    {
+        $payment = Payment::findOrFail($id);
+        $payment->payment_status = 'onaylandı';
+        $payment->save();
+
+        if ($payment->debt) {
+            $debt = $payment->debt;
+            $totalPaid = Payment::where('debt_id', $debt->id)
+                ->where('payment_status', 'onaylandı')
+                ->sum('amount');
+
+            if ($totalPaid >= $debt->amount) {
+                $debt->status = 'ödendi';
+            } else {
+                $debt->status = 'ödüyor';
+            }
+            $debt->save();
+        }
+
+        return redirect()->back()->with('success', 'Ödeme onaylandı.');
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $request->validate([
+            'rejection_reason' => 'required|string|max:255'
+        ]);
+
+        $payment = Payment::findOrFail($id);
+        $payment->payment_status = 'reddedildi';
+        $payment->rejection_reason = $request->rejection_reason;
+        $payment->save();
+
+        return redirect()->back()->with('success', 'Ödeme reddedildi.');
+    }
+
+    public function showReceipt($id)
+    {
+        $payment = Payment::findOrFail($id);
+        $path = Storage::disk('public')->path($payment->receipt_path);
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+        if ($extension === 'pdf') {
+            return response()->file($path);
+        }
+
+        return response()->file($path);
     }
 }

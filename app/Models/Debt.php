@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +14,11 @@ class Debt extends Model
         'description',
         'amount',
         'due_date',
-        'status',
+        'status'
+    ];
+
+    protected $casts = [
+        'due_date' => 'datetime',
     ];
 
     public function student()
@@ -23,8 +26,8 @@ class Debt extends Model
         return $this->belongsTo(Student::class);
     }
 
-    public function payment()
+    public function payments()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasMany(Payment::class);
     }
 }

@@ -73,8 +73,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/izin-basvuru', [PermissionController::class, 'store'])->name('izin.store');
             Route::get('/izin', [PermissionController::class, 'index'])->name('izin.index');
 
-
-
             Route::get('/rooms', [StudentRoomController::class, 'index'])->name('student.oda.index');
 
             Route::get('/aidat', [StudentPaymentController::class, 'index'])->name('student.aidat.index');
@@ -84,6 +82,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/duyuru', [App\Http\Controllers\student\AnnouncementController::class, 'index'])->name('student.duyuru.index');
             Route::get('/complain', [ComplaintController::class, 'index'])->name('student.sikayet.index');
 
+            // Öğrenci ödemeleri
+            Route::get('/payments', [StudentPaymentController::class, 'index'])->name('student.payments.index');
+            Route::post('/payments', [StudentPaymentController::class, 'store'])->name('student.payments.store');
+            Route::get('/payments/{id}/receipt', [StudentPaymentController::class, 'showReceipt'])->name('student.payments.show-receipt');
         });
     });
 });
@@ -173,6 +175,14 @@ Route::post('/reservation', [ReservationController::class, 'store'])->name('rese
 Route::middleware(['auth'])->group(function () {
     Route::get('/password/change', [ProfileController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/password/change', [ProfileController::class, 'changePassword'])->name('password.change.save');
+});
+
+// Admin Ödemeleri
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
+    Route::get('/admin/payments', [App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('admin.payments.index');
+    Route::post('/admin/payments/{id}/approve', [App\Http\Controllers\Admin\PaymentController::class, 'approve'])->name('admin.payments.approve');
+    Route::post('/admin/payments/{id}/reject', [App\Http\Controllers\Admin\PaymentController::class, 'reject'])->name('admin.payments.reject');
+    Route::get('/admin/payments/{id}/receipt', [App\Http\Controllers\Admin\PaymentController::class, 'showReceipt'])->name('admin.payments.show-receipt');
 });
 
 require __DIR__.'/auth.php';
