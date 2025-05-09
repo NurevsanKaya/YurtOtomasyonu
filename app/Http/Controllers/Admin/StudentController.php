@@ -178,7 +178,7 @@ class StudentController extends Controller
     public function edit($id)
     {
         try {
-            $student = Student::with(['user', 'room'])->findOrFail($id);
+            $student = Student::with(['user', 'room', 'address.district.city', 'guardians'])->findOrFail($id);
             $rooms = Room::all();
             return view('admin.students.edit', compact('student', 'rooms'));
         } catch (\Exception $e) {
@@ -187,20 +187,49 @@ class StudentController extends Controller
         }
     }
 
-    public function update(Request $request, Student $student)
+    public function update(Request $request, $id)
     {
         try {
-            // Debug için tüm gelen verileri loglayalım
-            Log::info('Güncelleme form verileri:', $request->all());
+            // Önce öğrenciyi bulalım
+            $student = Student::findOrFail($id);
 
-            // Validasyon kuralları
+            // TC kontrolü
+            if ($request->tc !== $student->tc) {
+                $existingTC = Student::where('tc', $request->tc)
+                    ->where('id', '!=', $id)
+                    ->first();
+
+                if ($existingTC) {
+                    return back()
+                        ->withInput()
+                        ->withErrors(['tc' => "Bu TC kimlik numarası {$existingTC->first_name} {$existingTC->last_name} tarafından kullanılıyor."]);
+                }
+            }
+
+            // Email kontrolü
+            if ($request->email !== $student->email) {
+                $existingEmail = Student::where('email', $request->email)
+                    ->where('id', '!=', $id)
+                    ->exists();
+
+                $existingUserEmail = User::where('email', $request->email)
+                    ->where('id', '!=', $student->user_id)
+                    ->exists();
+
+                if ($existingEmail || $existingUserEmail) {
+                    return back()
+                        ->withInput()
+                        ->withErrors(['email' => 'Bu e-posta adresi başka bir kullanıcı tarafından kullanılıyor.']);
+                }
+            }
+
+            // Temel validasyon kuralları
             $validated = $request->validate([
-                // Öğrenci bilgileri
                 'first_name' => 'required|string|max:50',
                 'last_name' => 'required|string|max:50',
-                'tc' => ['required', 'digits:11', Rule::unique('students')->ignore($student->id)],
+                'tc' => 'required|digits:11',
                 'phone' => 'required|string',
-                'email' => ['required', 'email', 'max:100', Rule::unique('students')->ignore($student->id)],
+                'email' => 'required|email|max:100',
                 'birth_date' => 'required|date|before:today',
                 'registration_date' => 'required|date',
                 'medical_condition' => 'nullable|string|max:255',
@@ -226,26 +255,6 @@ class StudentController extends Controller
 
             DB::beginTransaction();
 
-            // Email kontrolü (users tablosunda)
-            if ($validated['email'] !== $student->email) {
-                if (User::where('email', $validated['email'])->where('id', '!=', $student->user_id)->exists()) {
-                    DB::rollBack();
-                    return redirect()->back()
-                        ->withInput()
-                        ->withErrors(['email' => 'Bu e-posta adresi zaten kullanımda.']);
-                }
-            }
-
-            // TC kontrolü
-            if ($validated['tc'] !== $student->tc) {
-                if (Student::where('tc', $validated['tc'])->where('id', '!=', $student->id)->exists()) {
-                    DB::rollBack();
-                    return redirect()->back()
-                        ->withInput()
-                        ->withErrors(['tc' => 'Bu TC kimlik numarası zaten kullanımda.']);
-                }
-            }
-
             $oldRoomId = $student->room_id;
             $newRoomId = $validated['room_id'];
 
@@ -262,20 +271,52 @@ class StudentController extends Controller
                 }
                 
                 // Eski odanın doluluk sayısını azalt
-                $oldRoom = Room::findOrFail($oldRoomId);
-                $oldRoom->decrement('current_occupants');
+                if ($oldRoomId) {
+                    $oldRoom = Room::findOrFail($oldRoomId);
+                    $oldRoom->decrement('current_occupants');
+                }
                 
                 // Yeni odanın doluluk sayısını arttır
                 $newRoom->increment('current_occupants');
             }
 
-            // Adresi güncelle
-            $address = Address::findOrFail($student->address_id);
-            $address->update([
-                'district_id' => $validated['district_id'],
-                'postal_code' => $validated['postal_code'],
-                'address_line' => $validated['address_line'],
-            ]);
+            // Adresi güncelle veya oluştur
+            if ($student->address_id) {
+                $address = Address::findOrFail($student->address_id);
+                $address->update([
+                    'district_id' => $validated['district_id'],
+                    'postal_code' => $validated['postal_code'],
+                    'address_line' => $validated['address_line'],
+                ]);
+            } else {
+                $address = Address::create([
+                    'district_id' => $validated['district_id'],
+                    'postal_code' => $validated['postal_code'],
+                    'address_line' => $validated['address_line'],
+                ]);
+                $student->address_id = $address->id;
+            }
+
+            // Veliyi güncelle veya oluştur
+            $guardian = $student->guardians()->first();
+            if ($guardian) {
+                $guardian->update([
+                    'first_name' => $validated['guardian_first_name'],
+                    'last_name' => $validated['guardian_last_name'],
+                    'phone' => $validated['guardian_phone'],
+                    'email' => $validated['guardian_email'],
+                    'relationship' => $validated['guardian_relationship']
+                ]);
+            } else {
+                $guardian = Guardian::create([
+                    'student_id' => $student->id,
+                    'first_name' => $validated['guardian_first_name'],
+                    'last_name' => $validated['guardian_last_name'],
+                    'phone' => $validated['guardian_phone'],
+                    'email' => $validated['guardian_email'],
+                    'relationship' => $validated['guardian_relationship']
+                ]);
+            }
 
             // Kullanıcıyı güncelle
             $user = User::findOrFail($student->user_id);
@@ -286,7 +327,6 @@ class StudentController extends Controller
 
             // Öğrenciyi güncelle
             $student->update([
-                'room_id' => $validated['room_id'],
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'tc' => $validated['tc'],
@@ -294,30 +334,19 @@ class StudentController extends Controller
                 'email' => $validated['email'],
                 'birth_date' => $validated['birth_date'],
                 'registration_date' => $validated['registration_date'],
-                'medical_condition' => $validated['medical_condition'] ?? null,
+                'medical_condition' => $validated['medical_condition'],
                 'emergency_contact' => $validated['emergency_contact'],
-                'is_active' => $request->has('is_active'),
-            ]);
-
-            // Veliyi güncelle
-            $guardian = Guardian::where('student_id', $student->id)->firstOrFail();
-            $guardian->update([
-                'first_name' => $validated['guardian_first_name'],
-                'last_name' => $validated['guardian_last_name'],
-                'phone' => $validated['guardian_phone'],
-                'email' => $validated['guardian_email'],
-                'relationship' => $validated['guardian_relationship']
+                'room_id' => $validated['room_id'],
+                'address_id' => $address->id
             ]);
 
             DB::commit();
-            Log::info('Öğrenci başarıyla güncellendi', ['student_id' => $student->id]);
 
             return redirect()->route('admin.students.index')
-                ->with('success', 'Öğrenci bilgileri başarıyla güncellendi');
+                ->with('success', 'Öğrenci başarıyla güncellendi.');
 
         } catch (ValidationException $e) {
             DB::rollBack();
-            Log::error('Validasyon hatası:', ['errors' => $e->errors()]);
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->withInput();

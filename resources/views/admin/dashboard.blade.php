@@ -60,39 +60,41 @@
             </div>
             <div class="p-6">
                 @if($recentComplaints->count() > 0)
-                    <div class="space-y-4">
-                        @foreach($recentComplaints as $complaint)
-                            <div class="flex items-start space-x-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="text-sm font-medium text-gray-900">
-                                            @if($complaint->student)
-                                                {{ $complaint->student->first_name }} {{ $complaint->student->last_name }}
-                                            @else
-                                                Silinmiş Öğrenci
-                                            @endif
-                                        </h3>
-                                        <span class="text-xs text-gray-500">
-                                            {{ $complaint->created_at->format('d.m.Y H:i') }}
-                                        </span>
-                                    </div>
-                                    <p class="mt-1 text-sm text-gray-600">{{ $complaint->description }}</p>
-                                    <div class="mt-2">
-                                        <span class="px-2 py-1 text-xs rounded-full
-                                            @if($complaint->status === 'bekliyor')
-                                                bg-yellow-100 text-yellow-800
-                                            @elseif($complaint->status === 'çözüldü')
-                                                bg-green-100 text-green-800
-                                            @else
-                                                bg-red-100 text-red-800
-                                            @endif
-                                        ">
-                                            {{ ucfirst($complaint->status) }}
-                                        </span>
+                    <div class="max-h-[583px] overflow-y-auto">
+                        <div class="space-y-4">
+                            @foreach($recentComplaints as $complaint)
+                                <div class="flex items-start space-x-4">
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-sm font-medium text-gray-900">
+                                                @if($complaint->student)
+                                                    {{ $complaint->student->first_name }} {{ $complaint->student->last_name }}
+                                                @else
+                                                    Silinmiş Öğrenci
+                                                @endif
+                                            </h3>
+                                            <span class="text-xs text-gray-500">
+                                                {{ $complaint->created_at->format('d.m.Y H:i') }}
+                                            </span>
+                                        </div>
+                                        <p class="mt-1 text-sm text-gray-600">{{ $complaint->description }}</p>
+                                        <div class="mt-2">
+                                            <span class="px-2 py-1 text-xs rounded-full
+                                                @if($complaint->status === 'bekliyor')
+                                                    bg-yellow-100 text-yellow-800
+                                                @elseif($complaint->status === 'çözüldü')
+                                                    bg-green-100 text-green-800
+                                                @else
+                                                    bg-red-100 text-red-800
+                                                @endif
+                                            ">
+                                                {{ ucfirst($complaint->status) }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 @else
                     <p class="text-gray-500 text-sm">Henüz şikayet bulunmuyor.</p>
@@ -107,37 +109,39 @@
             </div>
             <div class="p-6">
                 @if($recentPayments->count() > 0)
-                    <div class="space-y-4">
-                        @foreach($recentPayments as $payment)
-                            <div class="flex items-start space-x-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="text-sm font-medium text-gray-900">
-                                            {{ $payment->student->first_name }} {{ $payment->student->last_name }}
-                                        </h3>
-                                        <span class="text-xs text-gray-500">
-                                            {{ $payment->created_at->format('d.m.Y H:i') }}
-                                        </span>
-                                    </div>
-                                    <p class="mt-1 text-sm text-gray-600">
-                                        {{ number_format($payment->amount, 2) }} TL - {{ ucfirst($payment->payment_type) }}
-                                    </p>
-                                    <div class="mt-2">
-                                        <span class="px-2 py-1 text-xs rounded-full
-                                            @if($payment->payment_status === 'bekliyor')
-                                                bg-yellow-100 text-yellow-800
-                                            @elseif($payment->payment_status === 'onaylandı')
-                                                bg-green-100 text-green-800
-                                            @else
-                                                bg-red-100 text-red-800
-                                            @endif
-                                        ">
-                                            {{ ucfirst($payment->payment_status) }}
-                                        </span>
+                    <div class="max-h-[583px] overflow-y-auto">
+                        <div class="space-y-4">
+                            @foreach($recentPayments as $payment)
+                                <div class="flex items-start space-x-4">
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-sm font-medium text-gray-900">
+                                                {{ $payment->student->first_name }} {{ $payment->student->last_name }}
+                                            </h3>
+                                            <span class="text-xs text-gray-500">
+                                                {{ $payment->created_at->format('d.m.Y H:i') }}
+                                            </span>
+                                        </div>
+                                        <p class="mt-1 text-sm text-gray-600">
+                                            {{ number_format($payment->amount, 2) }} TL - {{ ucfirst($payment->payment_type) }}
+                                        </p>
+                                        <div class="mt-2">
+                                            <span class="px-2 py-1 text-xs rounded-full
+                                                @if($payment->payment_status === 'bekliyor')
+                                                    bg-yellow-100 text-yellow-800
+                                                @elseif($payment->payment_status === 'onaylandı')
+                                                    bg-green-100 text-green-800
+                                                @else
+                                                    bg-red-100 text-red-800
+                                                @endif
+                                            ">
+                                                {{ ucfirst($payment->payment_status) }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 @else
                     <p class="text-gray-500 text-sm">Henüz ödeme bulunmuyor.</p>
