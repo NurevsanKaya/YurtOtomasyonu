@@ -31,74 +31,76 @@
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Öğrenci</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Borç Açıklaması</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tutar</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ödeme Türü</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($payments as $payment)
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        @if($payment->student)
-                            {{ $payment->student->first_name }} {{ $payment->student->last_name }}
-                        @else
-                            <span class="text-red-500">Öğrenci bilgisi bulunamadı</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4">
-                        @if($payment->debt)
-                            {{ $payment->debt->description }}
-                        @else
-                            <span class="text-red-500">Borç bilgisi bulunamadı</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ number_format($payment->amount, 2) }} TL
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ ucfirst($payment->payment_type) }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $payment->created_at->format('d.m.Y H:i') }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        @if($payment->payment_status === 'bekliyor')
-                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Onay Bekliyor</span>
-                        @elseif($payment->payment_status === 'onaylandı')
-                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Onaylandı</span>
-                        @else
-                            <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
-                                Reddedildi: {{ $payment->rejection_reason }}
-                            </span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        @if($payment->payment_status === 'bekliyor')
-                            <button onclick="openApproveModal({{ $payment->id }})" class="text-green-600 hover:text-green-900 mr-3">
-                                Onayla
-                            </button>
-                            <button onclick="openRejectModal({{ $payment->id }})" class="text-red-600 hover:text-red-900">
-                                Reddet
-                            </button>
-                        @endif
-                        @if($payment->receipt_path)
-                            <a href="{{ route('admin.payments.show-receipt', $payment->id) }}" target="_blank" class="text-blue-600 hover:text-blue-900 ml-3">
-                                Dekontu Görüntüle
-                            </a>
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="max-h-[477px] overflow-y-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50 sticky top-0">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Öğrenci</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Borç Açıklaması</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tutar</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ödeme Türü</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($payments as $payment)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($payment->student)
+                                {{ $payment->student->first_name }} {{ $payment->student->last_name }}
+                            @else
+                                <span class="text-red-500">Öğrenci bilgisi bulunamadı</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($payment->debt)
+                                {{ $payment->debt->description }}
+                            @else
+                                <span class="text-red-500">Borç bilgisi bulunamadı</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ number_format($payment->amount, 2) }} TL
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ ucfirst($payment->payment_type) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ $payment->created_at->format('d.m.Y H:i') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($payment->payment_status === 'bekliyor')
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Onay Bekliyor</span>
+                            @elseif($payment->payment_status === 'onaylandı')
+                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Onaylandı</span>
+                            @else
+                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
+                                    Reddedildi: {{ $payment->rejection_reason }}
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            @if($payment->payment_status === 'bekliyor')
+                                <button onclick="openApproveModal({{ $payment->id }})" class="text-green-600 hover:text-green-900 mr-3">
+                                    Onayla
+                                </button>
+                                <button onclick="openRejectModal({{ $payment->id }})" class="text-red-600 hover:text-red-900">
+                                    Reddet
+                                </button>
+                            @endif
+                            @if($payment->receipt_path)
+                                <a href="{{ route('admin.payments.show-receipt', $payment->id) }}" target="_blank" class="text-blue-600 hover:text-blue-900 ml-3">
+                                    Dekontu Görüntüle
+                                </a>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

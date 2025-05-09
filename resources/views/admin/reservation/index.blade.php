@@ -78,99 +78,101 @@
     </div>
 
     <div class="bg-white shadow-sm rounded my-4 overflow-x-auto">
-        <table class="min-w-full bg-white">
-            <thead>
-                <tr class="bg-gray-100 text-gray-600 text-xs leading-normal">
-                    <th class="py-2 px-4 text-left">ID</th>
-                    <th class="py-2 px-4 text-left">Ad</th>
-                    <th class="py-2 px-4 text-left">Soyad</th>
-                    <th class="py-2 px-4 text-left">TC</th>
-                    <th class="py-2 px-4 text-left">Telefon</th>
-                    <th class="py-2 px-4 text-left">E-posta</th>
-                    <th class="py-2 px-4 text-left">Oda</th>
-                    <th class="py-2 px-4 text-left">Kayıt Tarihi</th>
-                    <th class="py-2 px-4 text-center">Durum</th>
-                    <th class="py-2 px-4 text-center">İşlemler</th>
-                </tr>
-            </thead>
-            <tbody class="text-gray-600 text-xs">
-                @foreach($reservations as $reservation)
-                <tr class="border-b border-gray-100 hover:bg-gray-50">
-                    <td class="py-2 px-4">{{ $reservation->id }}</td>
-                    <td class="py-2 px-4">{{ $reservation->first_name }}</td>
-                    <td class="py-2 px-4">{{ $reservation->last_name }}</td>
-                    <td class="py-2 px-4">{{ $reservation->tc }}</td>
-                    <td class="py-2 px-4">{{ $reservation->phone }}</td>
-                    <td class="py-2 px-4">{{ $reservation->email }}</td>
-                    <td class="py-2 px-4">
-                        @if($reservation->room)
-                            <span class="tooltip" title="Kapasite: {{ $reservation->room->capacity }}, Doluluk: {{ $reservation->room->current_occupants }}">
-                                {{ $reservation->room->room_number }} - {{ $reservation->room->room_type }}
-                                <span class="text-xs">
-                                    ({{ $reservation->room->current_occupants }}/{{ $reservation->room->capacity }})
+        <div class="max-h-[742px] overflow-y-auto"> <!-- liste uzunluğunu belirliyoz.Bu uzunluktan sonra dikey scroll bar görünür. -->
+            <table class="min-w-full bg-white">
+                <thead class="bg-gray-100 text-gray-600 text-xs leading-normal sticky top-0">
+                    <tr>
+                        <th class="py-2 px-4 text-left">ID</th>
+                        <th class="py-2 px-4 text-left">Ad</th>
+                        <th class="py-2 px-4 text-left">Soyad</th>
+                        <th class="py-2 px-4 text-left">TC</th>
+                        <th class="py-2 px-4 text-left">Telefon</th>
+                        <th class="py-2 px-4 text-left">E-posta</th>
+                        <th class="py-2 px-4 text-left">Oda</th>
+                        <th class="py-2 px-4 text-left">Kayıt Tarihi</th>
+                        <th class="py-2 px-4 text-center">Durum</th>
+                        <th class="py-2 px-4 text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-xs">
+                    @foreach($reservations as $reservation)
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-2 px-4">{{ $reservation->id }}</td>
+                        <td class="py-2 px-4">{{ $reservation->first_name }}</td>
+                        <td class="py-2 px-4">{{ $reservation->last_name }}</td>
+                        <td class="py-2 px-4">{{ $reservation->tc }}</td>
+                        <td class="py-2 px-4">{{ $reservation->phone }}</td>
+                        <td class="py-2 px-4">{{ $reservation->email }}</td>
+                        <td class="py-2 px-4">
+                            @if($reservation->room)
+                                <span class="tooltip" title="Kapasite: {{ $reservation->room->capacity }}, Doluluk: {{ $reservation->room->current_occupants }}">
+                                    {{ $reservation->room->room_number }} - {{ $reservation->room->room_type }}
+                                    <span class="text-xs">
+                                        ({{ $reservation->room->current_occupants }}/{{ $reservation->room->capacity }})
+                                    </span>
                                 </span>
-                            </span>
-                        @else
-                            <span class="text-red-500">Oda Seçilmemiş</span>
-                        @endif
-                    </td>
-                    <td class="py-2 px-4">
-                        @if($reservation->registration_date)
-                            @if(is_string($reservation->registration_date))
-                                {{ \Carbon\Carbon::parse($reservation->registration_date)->format('d.m.Y') }}
                             @else
-                                {{ $reservation->registration_date->format('d.m.Y') }}
+                                <span class="text-red-500">Oda Seçilmemiş</span>
                             @endif
-                        @else
-                            Belirtilmemiş
-                        @endif
-                    </td>
-                    <td class="py-2 px-4 text-center">
-                        @if($reservation->status == 'beklemede')
-                            <span class="bg-yellow-100 text-yellow-800 py-0.5 px-2 rounded-full text-xs">Beklemede</span>
-                        @elseif($reservation->status == 'onaylandı')
-                            <span class="bg-green-100 text-green-800 py-0.5 px-2 rounded-full text-xs">Onaylandı</span>
-                        @elseif($reservation->status == 'reddedildi')
-                            <span class="bg-red-100 text-red-800 py-0.5 px-2 rounded-full text-xs">Reddedildi</span>
-                        @endif
-                    </td>
-                    <td class="py-2 px-4 text-center">
-                        @if($reservation->status == 'beklemede')
-                            <div class="flex items-center justify-center space-x-1">
-                                <button type="button" class="bg-blue-500 text-white py-0.5 px-2 rounded text-xs hover:bg-blue-600 flex items-center" onclick="showReservationDetails({{ $reservation->id }})">
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                    Detay
-                                </button>
-                                <form action="{{ route('admin.reservations.approve', $reservation->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="bg-green-500 text-white py-0.5 px-2 rounded text-xs hover:bg-green-600 flex items-center">
+                        </td>
+                        <td class="py-2 px-4">
+                            @if($reservation->registration_date)
+                                @if(is_string($reservation->registration_date))
+                                    {{ \Carbon\Carbon::parse($reservation->registration_date)->format('d.m.Y') }}
+                                @else
+                                    {{ $reservation->registration_date->format('d.m.Y') }}
+                                @endif
+                            @else
+                                Belirtilmemiş
+                            @endif
+                        </td>
+                        <td class="py-2 px-4 text-center">
+                            @if($reservation->status == 'beklemede')
+                                <span class="bg-yellow-100 text-yellow-800 py-0.5 px-2 rounded-full text-xs">Beklemede</span>
+                            @elseif($reservation->status == 'onaylandı')
+                                <span class="bg-green-100 text-green-800 py-0.5 px-2 rounded-full text-xs">Onaylandı</span>
+                            @elseif($reservation->status == 'reddedildi')
+                                <span class="bg-red-100 text-red-800 py-0.5 px-2 rounded-full text-xs">Reddedildi</span>
+                            @endif
+                        </td>
+                        <td class="py-2 px-4 text-center">
+                            @if($reservation->status == 'beklemede')
+                                <div class="flex items-center justify-center space-x-1">
+                                    <button type="button" class="bg-blue-500 text-white py-0.5 px-2 rounded text-xs hover:bg-blue-600 flex items-center" onclick="showReservationDetails({{ $reservation->id }})">
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                         </svg>
-                                        Onayla
+                                        Detay
                                     </button>
-                                </form>
-                                <form action="{{ route('admin.reservations.reject', $reservation->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="bg-red-500 text-white py-0.5 px-2 rounded text-xs hover:bg-red-600 flex items-center">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        Reddet
-                                    </button>
-                                </form>
-                            </div>
-                        @else
-                            <span class="text-gray-500 text-xs">İşlem Yapıldı</span>
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                                    <form action="{{ route('admin.reservations.approve', $reservation->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="bg-green-500 text-white py-0.5 px-2 rounded text-xs hover:bg-green-600 flex items-center">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Onayla
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('admin.reservations.reject', $reservation->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="bg-red-500 text-white py-0.5 px-2 rounded text-xs hover:bg-red-600 flex items-center">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                            Reddet
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                <span class="text-gray-500 text-xs">İşlem Yapıldı</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <style>

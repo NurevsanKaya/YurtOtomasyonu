@@ -64,46 +64,58 @@
 
     <!-- Dinamik Tablo -->
     <div class="overflow-x-auto max-w-[1100px] mx-auto">
-        <table class="w-full border border-gray-300 text-sm">
-            <thead class="bg-gray-100 text-gray-800">
-                <tr>
-                    <th class="py-3 px-4 border-b text-left">Adı</th>
-                    <th class="py-3 px-4 border-b text-left">Soyadı</th>
-                    <th class="py-3 px-4 border-b text-left">Telefon</th>
-                    <th class="py-3 px-4 border-b text-left">TC</th>
-                    <th class="py-3 px-4 border-b text-left">Adresi</th>
-                    <th class="py-3 px-4 border-b text-left">Ziyaret Nedeni</th>
-                    <th class="py-3 px-4 border-b text-left">Giriş Tarihi</th>
-                    <th class="py-3 px-4 border-b text-left">Çıkış Tarihi</th>
-                    <th class="py-3 px-4 border-b text-left">Ziyaret Onayı</th>
-                </tr>
-            </thead>
-            <tbody>
-            @forelse($visitors as $visitor)
-                <tr class="hover:bg-gray-50">
-                    <td class="py-2 px-4 border-b">{{ $visitor->first_name }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->last_name }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->phone }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->tc ?? '-' }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->address ?? '-' }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->visit_reason ?? '-' }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->check_in ? $visitor->check_in->format('d.m.Y H:i') : '-' }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->check_out ? $visitor->check_out->format('d.m.Y H:i') : '-' }}</td>
-                    <td class="py-2 px-4 border-b">
-                        @if (is_null($visitor->visit_approval))
-                            <span class="text-yellow-600 font-semibold">Bekliyor</span>
-                        @elseif ($visitor->visit_approval)
-                            <span class="text-green-600 font-semibold">Onaylandı</span>
-                        @else
-                            <span class="text-red-600 font-semibold">Reddedildi</span>
-                        @endif
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="9" class="text-center py-4">Henüz ziyaretçi kaydınız bulunmamaktadır.</td></tr>
-            @endforelse
-            </tbody>
-        </table>
+        <!-- Arama Kutusu -->
+        <div class="mb-4">
+            <input type="text" 
+                   id="searchInput"
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="İsim ile ara..."
+                   onkeyup="searchTable()"
+            >
+        </div>
+
+        <div class="max-h-[371px] overflow-y-auto">
+            <table class="w-full border border-gray-300 text-sm">
+                <thead class="bg-gray-100 text-gray-800 sticky top-0">
+                    <tr>
+                        <th class="py-3 px-4 border-b text-left">Adı</th>
+                        <th class="py-3 px-4 border-b text-left">Soyadı</th>
+                        <th class="py-3 px-4 border-b text-left">Telefon</th>
+                        <th class="py-3 px-4 border-b text-left">TC</th>
+                        <th class="py-3 px-4 border-b text-left">Adresi</th>
+                        <th class="py-3 px-4 border-b text-left">Ziyaret Nedeni</th>
+                        <th class="py-3 px-4 border-b text-left">Giriş Tarihi</th>
+                        <th class="py-3 px-4 border-b text-left">Çıkış Tarihi</th>
+                        <th class="py-3 px-4 border-b text-left">Ziyaret Onayı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($visitors as $visitor)
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-2 px-4 border-b">{{ $visitor->first_name }}</td>
+                        <td class="py-2 px-4 border-b">{{ $visitor->last_name }}</td>
+                        <td class="py-2 px-4 border-b">{{ $visitor->phone }}</td>
+                        <td class="py-2 px-4 border-b">{{ $visitor->tc ?? '-' }}</td>
+                        <td class="py-2 px-4 border-b">{{ $visitor->address ?? '-' }}</td>
+                        <td class="py-2 px-4 border-b">{{ $visitor->visit_reason ?? '-' }}</td>
+                        <td class="py-2 px-4 border-b">{{ $visitor->check_in ? $visitor->check_in->format('d.m.Y H:i') : '-' }}</td>
+                        <td class="py-2 px-4 border-b">{{ $visitor->check_out ? $visitor->check_out->format('d.m.Y H:i') : '-' }}</td>
+                        <td class="py-2 px-4 border-b">
+                            @if (is_null($visitor->visit_approval))
+                                <span class="text-yellow-600 font-semibold">Bekliyor</span>
+                            @elseif ($visitor->visit_approval)
+                                <span class="text-green-600 font-semibold">Onaylandı</span>
+                            @else
+                                <span class="text-red-600 font-semibold">Reddedildi</span>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="9" class="text-center py-4">Henüz ziyaretçi kaydınız bulunmamaktadır.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -115,6 +127,30 @@
         function closeModal() {
             document.getElementById('visitorModal').classList.remove('flex');
             document.getElementById('visitorModal').classList.add('hidden');
+        }
+
+        function searchTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const tbody = document.querySelector('tbody');
+            const rows = tbody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const firstNameCell = rows[i].getElementsByTagName('td')[0];
+                const lastNameCell = rows[i].getElementsByTagName('td')[1];
+                
+                if (firstNameCell && lastNameCell) {
+                    const firstName = firstNameCell.textContent || firstNameCell.innerText;
+                    const lastName = lastNameCell.textContent || lastNameCell.innerText;
+                    const fullName = firstName + ' ' + lastName;
+                    
+                    if (fullName.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
         }
     </script>
 
