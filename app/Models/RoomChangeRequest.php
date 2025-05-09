@@ -22,12 +22,12 @@ class RoomChangeRequest extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function currentRoom()
+    public function currentRoom()//mevcut oda
     {
         return $this->belongsTo(Room::class, 'current_room_id');
     }
 
-    public function requestedRoom()
+    public function requestedRoom()//talep edilen oda
     {
         return $this->belongsTo(Room::class, 'requested_room_id');
     }

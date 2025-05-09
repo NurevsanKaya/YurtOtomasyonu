@@ -38,6 +38,19 @@
                     </div>
                 @endif
 
+                <!-- Arama Kutuları -->
+                <div class="mb-4 grid grid-cols-3 gap-4">
+                    <div>
+                        <input type="text" id="searchTC" placeholder="TC Kimlik No ile ara..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <input type="text" id="searchEmail" placeholder="Email ile ara..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <input type="text" id="searchName" placeholder="Ad ile ara..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
                 <div class="overflow-x-auto bg-white rounded-lg shadow overflow-y-auto relative">
                     <table class="border-collapse table-auto w-full whitespace-no-wrap bg-white table-striped relative">
                         <thead>
@@ -441,6 +454,39 @@ $(document).ready(function() {
     if (selectedCity) {
         $('#city_id').trigger('change');
     }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchTC = document.getElementById('searchTC');
+    const searchEmail = document.getElementById('searchEmail');
+    const searchName = document.getElementById('searchName');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function filterTable() {
+        const tcFilter = searchTC.value.toLowerCase();
+        const emailFilter = searchEmail.value.toLowerCase();
+        const nameFilter = searchName.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const tc = row.children[3].textContent.toLowerCase(); // TC Kimlik sütunu
+            const email = row.children[5].textContent.toLowerCase(); // Email sütunu
+            const name = row.children[1].textContent.toLowerCase(); // Ad sütunu
+
+            const matchesTC = tc.includes(tcFilter);
+            const matchesEmail = email.includes(emailFilter);
+            const matchesName = name.includes(nameFilter);
+
+            if (matchesTC && matchesEmail && matchesName) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    searchTC.addEventListener('input', filterTable);
+    searchEmail.addEventListener('input', filterTable);
+    searchName.addEventListener('input', filterTable);
 });
 </script>
 @endsection
