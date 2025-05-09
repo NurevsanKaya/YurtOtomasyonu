@@ -6,6 +6,7 @@
     <title>Yurt Otomasyonu - Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex">
@@ -27,17 +28,9 @@
                     <i class="fas fa-bed mr-3"></i>
                     <span>Odalar</span>
                 </a>
-                <a href="/admin/payments" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
-                    <i class="fas fa-money-bill mr-3"></i>
-                    <span>Ödemeler</span>
-                </a>
                 <a href="/admin/announcements" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
                     <i class="fas fa-bullhorn mr-3"></i>
                     <span>Duyurular</span>
-                </a>
-                <a href="/admin/maintenance" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
-                    <i class="fas fa-tools mr-3"></i>
-                    <span>Bakım Talepleri</span>
                 </a>
                 <a href="{{ route('admin.reservations.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
                     <i class="fas fa-calendar-check mr-3"></i>
@@ -51,6 +44,36 @@
                     <i class="fas fa-calendar-check mr-3"></i>
                     <span>İzin Talepleri</span>
                 </a>
+                <a href="{{ route('admin.complaint.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-exclamation-circle mr-3"></i>
+                    <span>Şikayet ve Talepler</span>
+                </a>
+                <a href="{{ route('admin.room-change-requests.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-exchange-alt mr-3"></i>
+                    <span>Oda Değişikliği Talepleri</span>
+                </a>
+                <!-- Ödeme Yönetimi -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="flex items-center justify-between w-full px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-money-bill mr-3"></i>
+                            <span>Ödeme Yönetimi</span>
+                        </div>
+                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="pl-4 mt-2 space-y-1">
+                        <a href="{{ route('admin.payments.index') }}" class="block px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                            <i class="fas fa-list mr-2"></i>
+                            <span>Ödemeler</span>
+                        </a>
+                        <a href="{{ route('admin.room-prices.index') }}" class="block px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                            <i class="fas fa-tag mr-2"></i>
+                            <span>Oda Fiyatları</span>
+                        </a>
+                    </div>
+                </div>
             </nav>
         </aside>
 

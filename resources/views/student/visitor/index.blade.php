@@ -27,6 +27,30 @@
                     <input type="text" name="tc" placeholder="TC Kimlik No (Opsiyonel)" class="border p-2 rounded">
                     <textarea name="address" placeholder="Adres" class="border p-2 rounded col-span-2"></textarea>
                     <textarea name="visit_reason" placeholder="Ziyaret Nedeni" class="border p-2 rounded col-span-2"></textarea>
+                    
+                    <!-- Giriş Tarihi ve Saati -->
+                    <div class="col-span-2 grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Giriş Tarihi</label>
+                            <input type="date" name="check_in_date" class="border p-2 rounded w-full" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Giriş Saati</label>
+                            <input type="time" name="check_in_time" class="border p-2 rounded w-full" required>
+                        </div>
+                    </div>
+
+                    <!-- Çıkış Tarihi ve Saati -->
+                    <div class="col-span-2 grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Çıkış Tarihi</label>
+                            <input type="date" name="check_out_date" class="border p-2 rounded w-full" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Çıkış Saati</label>
+                            <input type="time" name="check_out_time" class="border p-2 rounded w-full" required>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="flex justify-end mt-4">
@@ -38,23 +62,21 @@
         </div>
     </div>
 
-
     <!-- Dinamik Tablo -->
     <div class="overflow-x-auto max-w-[1100px] mx-auto">
         <table class="w-full border border-gray-300 text-sm">
-
-        <thead class="bg-gray-100 text-gray-800">
-            <tr>
-                <th class="py-3 px-4 border-b text-left">Adı</th>
-                <th class="py-3 px-4 border-b text-left">Soyadı</th>
-                <th class="py-3 px-4 border-b text-left">Telefon</th>
-                <th class="py-3 px-4 border-b text-left">TC</th>
-                <th class="py-3 px-4 border-b text-left">Adresi</th>
-                <th class="py-3 px-4 border-b text-left">Ziyaret Nedeni</th>
-                <th class="py-3 px-4 border-b text-left">Giriş Tarihi</th>
-                <th class="py-3 px-4 border-b text-left">Çıkış Tarihi</th>
-                <th class="py-3 px-4 border-b text-left">Ziyaret Onayı</th>
-            </tr>
+            <thead class="bg-gray-100 text-gray-800">
+                <tr>
+                    <th class="py-3 px-4 border-b text-left">Adı</th>
+                    <th class="py-3 px-4 border-b text-left">Soyadı</th>
+                    <th class="py-3 px-4 border-b text-left">Telefon</th>
+                    <th class="py-3 px-4 border-b text-left">TC</th>
+                    <th class="py-3 px-4 border-b text-left">Adresi</th>
+                    <th class="py-3 px-4 border-b text-left">Ziyaret Nedeni</th>
+                    <th class="py-3 px-4 border-b text-left">Giriş Tarihi</th>
+                    <th class="py-3 px-4 border-b text-left">Çıkış Tarihi</th>
+                    <th class="py-3 px-4 border-b text-left">Ziyaret Onayı</th>
+                </tr>
             </thead>
             <tbody>
             @forelse($visitors as $visitor)
@@ -65,8 +87,8 @@
                     <td class="py-2 px-4 border-b">{{ $visitor->tc ?? '-' }}</td>
                     <td class="py-2 px-4 border-b">{{ $visitor->address ?? '-' }}</td>
                     <td class="py-2 px-4 border-b">{{ $visitor->visit_reason ?? '-' }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->check_in ?? '-' }}</td>
-                    <td class="py-2 px-4 border-b">{{ $visitor->check_out ?? '-' }}</td>
+                    <td class="py-2 px-4 border-b">{{ $visitor->check_in ? $visitor->check_in->format('d.m.Y H:i') : '-' }}</td>
+                    <td class="py-2 px-4 border-b">{{ $visitor->check_out ? $visitor->check_out->format('d.m.Y H:i') : '-' }}</td>
                     <td class="py-2 px-4 border-b">
                         @if (is_null($visitor->visit_approval))
                             <span class="text-yellow-600 font-semibold">Bekliyor</span>
@@ -75,7 +97,6 @@
                         @else
                             <span class="text-red-600 font-semibold">Reddedildi</span>
                         @endif
-
                     </td>
                 </tr>
             @empty
@@ -84,6 +105,7 @@
             </tbody>
         </table>
     </div>
+
     <script>
         function openModal() {
             document.getElementById('visitorModal').classList.remove('hidden');

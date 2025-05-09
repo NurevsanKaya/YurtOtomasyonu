@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reservation;
 use App\Models\Student;
 use App\Models\Room;
+use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,7 +17,8 @@ class ReservationController extends Controller
     public function index()
     {
         $rooms = Room::all(); // Tüm odaları getir
-        return view('reservation.index', compact('rooms'));
+        $cities = City::all(); // Tüm şehirleri getir
+        return view('reservation.index', compact('rooms', 'cities'));
     }
 
     /**

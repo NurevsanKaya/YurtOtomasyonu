@@ -107,10 +107,15 @@ class ReservationController extends Controller
      */
     public function reject(Reservation $reservation)
     {
-        $reservation->update([
-            'status' => 'reddedildi'
-        ]);
-
+        $reservation->update(['status' => 'reddedildi']);
         return redirect()->back()->with('success', 'Rezervasyon reddedildi.');
+    }
+
+    /**
+     * Rezervasyon detaylarını getir
+     */
+    public function getDetails(Reservation $reservation)
+    {
+        return response()->json($reservation->load('room'));
     }
 } 

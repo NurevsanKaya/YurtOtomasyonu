@@ -17,4 +17,9 @@ class Room extends Model
             'room_type',
             'price'
         ];
+
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
 }
