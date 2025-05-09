@@ -32,6 +32,10 @@
                     <i class="fas fa-bullhorn mr-3"></i>
                     <span>Duyurular</span>
                 </a>
+                <a href="{{ route('admin.unpaid-students.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
+                    <i class="fas fa-exclamation-circle mr-3"></i>
+                    <span>Ödeme Yapmayanlar</span>
+                </a>
                 <a href="{{ route('admin.reservations.index') }}" class="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700 rounded-lg">
                     <i class="fas fa-calendar-check mr-3"></i>
                     <span>Rezervasyon Talepleri</span>

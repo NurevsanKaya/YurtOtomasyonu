@@ -144,7 +144,11 @@
                                     <td class="px-6 py-4">
                                         <!-- Düzenle Butonu -->
                                         <button onclick="editRoom({{ json_encode($room) }})" class="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-700">Düzenle</button>
-                                        <button class="px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-700">Sil</button>
+                                        <form action="{{ route('admin.rooms.destroy', $room->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-700" onclick="return confirm('Bu odayı silmek istediğinizden emin misiniz?')">Sil</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty

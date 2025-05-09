@@ -26,5 +26,9 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             DistrictSeeder::class,
         ]);
+
+        $this->call([
+            UnpaidDebtSeeder::class
+        ]);
     }
 }

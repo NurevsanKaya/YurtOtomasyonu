@@ -4,61 +4,109 @@
 
 @section('content')
     @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <div class="bg-green-100 border border-green-400 text-green-700 px-3 py-2 rounded relative mb-3 text-sm" role="alert">
             <span class="block sm:inline">{{ session('success') }}</span>
         </div>
     @endif
 
     @if(session('student_password'))
-        <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded relative mb-4" role="alert">
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 px-3 py-2 rounded relative mb-3 text-sm" role="alert">
             <span class="font-bold">Yeni Oluşturulan Hesap Bilgileri:</span>
-            <ul class="mt-2">
+            <ul class="mt-1">
                 <li><strong>E-posta:</strong> {{ session('student_email') }}</li>
                 <li><strong>TC Kimlik No:</strong> {{ session('student_tc') }}</li>
                 <li><strong>İlk Şifresi (TC):</strong> {{ session('student_password') }}</li>
             </ul>
-            <p class="mt-2 text-sm italic">
+            <p class="mt-1 text-xs italic">
                 Bu bilgiler sadece bir kez gösterilecektir. Öğrenciye iletmeyi unutmayınız!
             </p>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <div class="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded relative mb-3 text-sm" role="alert">
             <span class="block sm:inline">{{ session('error') }}</span>
         </div>
     @endif
 
-    <div class="bg-white shadow-md rounded my-6 overflow-x-auto">
+    <!-- Filtreleme Paneli -->
+    <div class="bg-white rounded-lg shadow-sm mb-4">
+        <button onclick="toggleFilters()" class="w-full px-4 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none flex items-center justify-between">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                </svg>
+                Filtreleme Seçenekleri
+            </div>
+            <svg id="filterArrow" class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </button>
+        
+        <div id="filterPanel" class="hidden p-4 border-t">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Ad Filtresi</label>
+                    <input type="text" id="searchName" placeholder="Ad..." class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">TC Kimlik No Filtresi</label>
+                    <input type="text" id="searchTC" placeholder="TC Kimlik No..." class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">E-posta Filtresi</label>
+                    <input type="text" id="searchEmail" placeholder="E-posta..." class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Başlangıç Tarihi</label>
+                    <input type="date" id="startDate" class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Bitiş Tarihi</label>
+                    <input type="date" id="endDate" class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 space-x-2">
+                <button onclick="clearFilters()" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    Filtreleri Temizle
+                </button>
+                <button onclick="applyFilters()" class="px-3 py-1.5 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    Filtreleri Uygula
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white shadow-sm rounded my-4 overflow-x-auto">
         <table class="min-w-full bg-white">
             <thead>
-                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                    <th class="py-3 px-6 text-left">ID</th>
-                    <th class="py-3 px-6 text-left">Ad</th>
-                    <th class="py-3 px-6 text-left">Soyad</th>
-                    <th class="py-3 px-6 text-left">TC</th>
-                    <th class="py-3 px-6 text-left">Telefon</th>
-                    <th class="py-3 px-6 text-left">E-posta</th>
-                    <th class="py-3 px-6 text-left">Oda</th>
-                    <th class="py-3 px-6 text-left">Kayıt Tarihi</th>
-                    <th class="py-3 px-6 text-center">Durum</th>
-                    <th class="py-3 px-6 text-center">İşlemler</th>
+                <tr class="bg-gray-100 text-gray-600 text-xs leading-normal">
+                    <th class="py-2 px-4 text-left">ID</th>
+                    <th class="py-2 px-4 text-left">Ad</th>
+                    <th class="py-2 px-4 text-left">Soyad</th>
+                    <th class="py-2 px-4 text-left">TC</th>
+                    <th class="py-2 px-4 text-left">Telefon</th>
+                    <th class="py-2 px-4 text-left">E-posta</th>
+                    <th class="py-2 px-4 text-left">Oda</th>
+                    <th class="py-2 px-4 text-left">Kayıt Tarihi</th>
+                    <th class="py-2 px-4 text-center">Durum</th>
+                    <th class="py-2 px-4 text-center">İşlemler</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-600 text-sm">
+            <tbody class="text-gray-600 text-xs">
                 @foreach($reservations as $reservation)
-                <tr class="border-b border-gray-200 hover:bg-gray-50">
-                    <td class="py-3 px-6 text-left">{{ $reservation->id }}</td>
-                    <td class="py-3 px-6 text-left">{{ $reservation->first_name }}</td>
-                    <td class="py-3 px-6 text-left">{{ $reservation->last_name }}</td>
-                    <td class="py-3 px-6 text-left">{{ $reservation->tc }}</td>
-                    <td class="py-3 px-6 text-left">{{ $reservation->phone }}</td>
-                    <td class="py-3 px-6 text-left">{{ $reservation->email }}</td>
-                    <td class="py-3 px-6 text-left">
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="py-2 px-4">{{ $reservation->id }}</td>
+                    <td class="py-2 px-4">{{ $reservation->first_name }}</td>
+                    <td class="py-2 px-4">{{ $reservation->last_name }}</td>
+                    <td class="py-2 px-4">{{ $reservation->tc }}</td>
+                    <td class="py-2 px-4">{{ $reservation->phone }}</td>
+                    <td class="py-2 px-4">{{ $reservation->email }}</td>
+                    <td class="py-2 px-4">
                         @if($reservation->room)
                             <span class="tooltip" title="Kapasite: {{ $reservation->room->capacity }}, Doluluk: {{ $reservation->room->current_occupants }}">
                                 {{ $reservation->room->room_number }} - {{ $reservation->room->room_type }}
-                                <span class="text-xs ml-1">
+                                <span class="text-xs">
                                     ({{ $reservation->room->current_occupants }}/{{ $reservation->room->capacity }})
                                 </span>
                             </span>
@@ -66,7 +114,7 @@
                             <span class="text-red-500">Oda Seçilmemiş</span>
                         @endif
                     </td>
-                    <td class="py-3 px-6 text-left">
+                    <td class="py-2 px-4">
                         @if($reservation->registration_date)
                             @if(is_string($reservation->registration_date))
                                 {{ \Carbon\Carbon::parse($reservation->registration_date)->format('d.m.Y') }}
@@ -77,20 +125,20 @@
                             Belirtilmemiş
                         @endif
                     </td>
-                    <td class="py-3 px-6 text-center">
+                    <td class="py-2 px-4 text-center">
                         @if($reservation->status == 'beklemede')
-                            <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">Beklemede</span>
+                            <span class="bg-yellow-100 text-yellow-800 py-0.5 px-2 rounded-full text-xs">Beklemede</span>
                         @elseif($reservation->status == 'onaylandı')
-                            <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">Onaylandı</span>
+                            <span class="bg-green-100 text-green-800 py-0.5 px-2 rounded-full text-xs">Onaylandı</span>
                         @elseif($reservation->status == 'reddedildi')
-                            <span class="bg-red-200 text-red-800 py-1 px-3 rounded-full text-xs">Reddedildi</span>
+                            <span class="bg-red-100 text-red-800 py-0.5 px-2 rounded-full text-xs">Reddedildi</span>
                         @endif
                     </td>
-                    <td class="py-3 px-6 text-center">
+                    <td class="py-2 px-4 text-center">
                         @if($reservation->status == 'beklemede')
-                            <div class="flex items-center justify-center space-x-2">
-                                <button type="button" class="bg-blue-500 text-white py-1 px-2 rounded text-xs hover:bg-blue-600 flex items-center" onclick="showReservationDetails({{ $reservation->id }})">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <div class="flex items-center justify-center space-x-1">
+                                <button type="button" class="bg-blue-500 text-white py-0.5 px-2 rounded text-xs hover:bg-blue-600 flex items-center" onclick="showReservationDetails({{ $reservation->id }})">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
@@ -98,8 +146,8 @@
                                 </button>
                                 <form action="{{ route('admin.reservations.approve', $reservation->id) }}" method="POST" class="inline">
                                     @csrf
-                                    <button type="submit" class="bg-green-500 text-white py-1 px-2 rounded text-xs hover:bg-green-600 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <button type="submit" class="bg-green-500 text-white py-0.5 px-2 rounded text-xs hover:bg-green-600 flex items-center">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                         </svg>
                                         Onayla
@@ -107,8 +155,8 @@
                                 </form>
                                 <form action="{{ route('admin.reservations.reject', $reservation->id) }}" method="POST" class="inline">
                                     @csrf
-                                    <button type="submit" class="bg-red-500 text-white py-1 px-2 rounded text-xs hover:bg-red-600 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <button type="submit" class="bg-red-500 text-white py-0.5 px-2 rounded text-xs hover:bg-red-600 flex items-center">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
                                         Reddet
@@ -199,6 +247,104 @@
 
         function closeReservationDetails() {
             document.getElementById('reservationDetailModal').classList.add('hidden');
+        }
+
+        // Global değişkenler
+        let searchName, searchTC, searchEmail, startDate, endDate, tableRows;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elementlerini bir kere seç
+            searchName = document.getElementById('searchName');
+            searchTC = document.getElementById('searchTC');
+            searchEmail = document.getElementById('searchEmail');
+            startDate = document.getElementById('startDate');
+            endDate = document.getElementById('endDate');
+            tableRows = document.querySelectorAll('tbody tr');
+        });
+
+        function toggleFilters() {
+            const filterPanel = document.getElementById('filterPanel');
+            const filterArrow = document.getElementById('filterArrow');
+            
+            if (filterPanel.classList.contains('hidden')) {
+                filterPanel.classList.remove('hidden');
+                filterArrow.classList.add('rotate-180');
+            } else {
+                filterPanel.classList.add('hidden');
+                filterArrow.classList.remove('rotate-180');
+            }
+        }
+
+        function clearFilters() {
+            // Input değerlerini temizle
+            searchName.value = '';
+            searchTC.value = '';
+            searchEmail.value = '';
+            startDate.value = '';
+            endDate.value = '';
+            
+            // Tüm satırları göster
+            tableRows.forEach(row => {
+                row.style.display = '';
+            });
+
+            // Sonuç mesajını güncelle
+            updateResultMessage(tableRows.length);
+        }
+
+        function updateResultMessage(count) {
+            const resultMessage = document.createElement('div');
+            resultMessage.className = 'text-sm text-gray-600 mt-2 filter-result-message';
+            resultMessage.textContent = `${count} kayıt gösteriliyor`;
+            
+            const existingMessage = document.querySelector('.filter-result-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            document.querySelector('.overflow-x-auto').insertAdjacentElement('beforebegin', resultMessage);
+        }
+
+        function applyFilters() {
+            const nameFilter = searchName.value.toLowerCase();
+            const tcFilter = searchTC.value.toLowerCase();
+            const emailFilter = searchEmail.value.toLowerCase();
+            const startDateValue = startDate.value ? new Date(startDate.value) : null;
+            const endDateValue = endDate.value ? new Date(endDate.value) : null;
+
+            let visibleCount = 0;
+
+            tableRows.forEach(row => {
+                const name = row.children[1].textContent.toLowerCase();
+                const tc = row.children[3].textContent.toLowerCase();
+                const email = row.children[5].textContent.toLowerCase();
+                const dateText = row.children[7].textContent.trim();
+                const registrationDate = dateText !== 'Belirtilmemiş' ? new Date(dateText.split('.').reverse().join('-')) : null;
+
+                const matchesName = !nameFilter || name.includes(nameFilter);
+                const matchesTC = !tcFilter || tc.includes(tcFilter);
+                const matchesEmail = !emailFilter || email.includes(emailFilter);
+                
+                let matchesDate = true;
+                if (registrationDate && (startDateValue || endDateValue)) {
+                    if (startDateValue && endDateValue) {
+                        matchesDate = registrationDate >= startDateValue && registrationDate <= endDateValue;
+                    } else if (startDateValue) {
+                        matchesDate = registrationDate >= startDateValue;
+                    } else if (endDateValue) {
+                        matchesDate = registrationDate <= endDateValue;
+                    }
+                }
+
+                if (matchesName && matchesTC && matchesEmail && matchesDate) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            updateResultMessage(visibleCount);
         }
     </script>
 @endsection 

@@ -178,6 +178,11 @@ Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
         Route::get('/room-change-requests', [App\Http\Controllers\Admin\RoomChangeRequestController::class, 'index'])->name('admin.room-change-requests.index');
         Route::post('/room-change-requests/{id}/approve', [App\Http\Controllers\Admin\RoomChangeRequestController::class, 'approve'])->name('admin.room-change-requests.approve');
         Route::post('/room-change-requests/{id}/reject', [App\Http\Controllers\Admin\RoomChangeRequestController::class, 'reject'])->name('admin.room-change-requests.reject');
+
+        // Ödeme yapmayan öğrenciler
+        Route::get('/unpaid-students', [App\Http\Controllers\Admin\UnpaidStudentsController::class, 'index'])->name('admin.unpaid-students.index');
+        Route::delete('/unpaid-students/{id}', [App\Http\Controllers\Admin\UnpaidStudentsController::class, 'destroy'])->name('admin.unpaid-students.destroy');
+        Route::patch('/unpaid-students/{id}/activate', [App\Http\Controllers\Admin\UnpaidStudentsController::class, 'activate'])->name('admin.unpaid-students.activate');
     });
 });
 
