@@ -39,7 +39,8 @@ class DormitoryFeeController extends Controller
             $priceCount = $roomPrices->count();
 
             $createdCount = 0;
-            $dueDate = Carbon::now()->endOfMonth();
+            // Son ödeme tarihini borç oluşturulduğu günden itibaren 30 gün sonrası olarak ayarla
+            $dueDate = Carbon::now()->addDays(30);
 
             foreach ($studentsWithRoom as $student) {
                 $roomPrice = RoomPrice::where('capacity', $student->room->capacity)->first();
